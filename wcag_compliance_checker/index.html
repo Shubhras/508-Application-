@@ -1,0 +1,3263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WCAG Full Compliance Checker</title>
+    <meta name="description" content="Comprehensive accessibility analysis for WCAG 2.0, 2.1, and 2.2 compliance">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --error-color: #dc2626;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #475569;
+            --focus-color: #3b82f6;
+            --focus-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Skip Link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 0 0 4px 4px;
+            z-index: 1000;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Header */
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 2rem 0;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .icon {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            margin: 0.5rem 0 0 0;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--surface-light);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-tabs {
+            display: flex;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            gap: 0;
+        }
+
+        .nav-tabs button {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-tabs button:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-tabs button:focus {
+            outline: 2px solid var(--focus-color);
+            outline-offset: -2px;
+        }
+
+        .nav-tabs button[aria-selected="true"] {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .badge {
+            background: var(--error-color);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            min-width: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 2rem 0;
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .panel-header {
+            margin-bottom: 2rem;
+        }
+
+        .panel-header h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .panel-header p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Forms */
+        fieldset {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--surface);
+        }
+
+        legend {
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 0 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        input[type="url"],
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--background);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--focus-color);
+            box-shadow: var(--focus-shadow);
+        }
+
+        .help-text {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Input Method Tabs */
+        .input-method-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .method-tab {
+            flex: 1;
+            background: var(--surface-light);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .method-tab:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .method-tab:focus {
+            outline: 2px solid var(--focus-color);
+            outline-offset: -2px;
+        }
+
+        .method-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .input-method {
+            display: none;
+        }
+
+        .input-method.active {
+            display: block;
+        }
+
+        /* Buttons */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            min-height: 44px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:focus {
+            outline: none;
+            box-shadow: var(--focus-shadow);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--surface-light);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-secondary);
+        }
+
+        .btn-secondary:focus {
+            outline: none;
+            box-shadow: var(--focus-shadow);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .progress-section.hidden {
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--surface-light);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        /* Error Message */
+        .error-message {
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 6px;
+            padding: 1rem;
+            color: #fca5a5;
+            margin-top: 1rem;
+        }
+
+        .error-message h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--error-color);
+        }
+
+        /* Results */
+        .results-summary {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 8px;
+            background: var(--surface-light);
+            transition: transform 0.2s ease;
+        }
+
+        .summary-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .summary-item h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .summary-item .count,
+        .summary-item .score {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-item.error {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(220, 38, 38, 0.1));
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .summary-item.error .count {
+            color: #fca5a5;
+        }
+
+        .summary-item.warning {
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.2), rgba(217, 119, 6, 0.1));
+            border: 1px solid rgba(217, 119, 6, 0.3);
+        }
+
+        .summary-item.warning .count {
+            color: #fcd34d;
+        }
+
+        .summary-item.success {
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.2), rgba(5, 150, 105, 0.1));
+            border: 1px solid rgba(5, 150, 105, 0.3);
+        }
+
+        .summary-item.success .count {
+            color: #6ee7b7;
+        }
+
+        .summary-item.score .score {
+            color: var(--primary-color);
+        }
+
+        .results-filters {
+            margin-bottom: 2rem;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-weight: normal;
+            margin-bottom: 0;
+        }
+
+        .filter-label {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .filter-label.error {
+            background: rgba(220, 38, 38, 0.2);
+            color: #fca5a5;
+        }
+
+        .filter-label.warning {
+            background: rgba(217, 119, 6, 0.2);
+            color: #fcd34d;
+        }
+
+        .filter-label.success {
+            background: rgba(5, 150, 105, 0.2);
+            color: #6ee7b7;
+        }
+
+        .count {
+            background: var(--surface-light);
+            color: var(--text-primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            min-width: 1.5rem;
+            text-align: center;
+        }
+
+        /* Results Content */
+        .results-content {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            min-height: 400px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+            height: 400px;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-secondary);
+        }
+
+        .empty-state p {
+            margin: 0;
+            color: var(--text-muted);
+        }
+
+        .result-item {
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .result-icon {
+            flex-shrink: 0;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .result-icon.error {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .result-icon.warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .result-icon.success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .result-icon.info {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .result-content {
+            flex: 1;
+        }
+
+        .result-title {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .result-description {
+            margin: 0 0 1rem 0;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .result-suggestion {
+            background: rgba(5, 150, 105, 0.1);
+            border: 1px solid rgba(5, 150, 105, 0.3);
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #6ee7b7;
+        }
+
+        .result-suggestion strong {
+            color: var(--success-color);
+        }
+
+        .result-details {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+        }
+
+        .wcag-reference {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: var(--surface-light);
+            color: var(--text-primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-decoration: none;
+            margin-top: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .wcag-reference:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Criteria Content */
+        .criteria-content {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .criteria-group {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .criteria-group:last-child {
+            border-bottom: none;
+        }
+
+        .criteria-header {
+            background: var(--surface-light);
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: background-color 0.2s ease;
+            border: none;
+            width: 100%;
+            text-align: left;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .criteria-header:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .criteria-header:focus {
+            outline: 2px solid var(--focus-color);
+            outline-offset: -2px;
+        }
+
+        .criteria-toggle {
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .criteria-group.expanded .criteria-toggle {
+            transform: rotate(90deg);
+        }
+
+        .criteria-title {
+            font-weight: 600;
+            margin: 0;
+            flex: 1;
+        }
+
+        .criteria-level {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .criteria-body {
+            display: none;
+            padding: 1.5rem;
+        }
+
+        .criteria-group.expanded .criteria-body {
+            display: block;
+        }
+
+        .criteria-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .criteria-items {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .criteria-item {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .criteria-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .criteria-item-title {
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .criteria-item-description {
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Results Actions */
+        .results-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: flex-end;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 2rem 0;
+            margin-top: auto;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Live Analysis */
+        .live-analysis-info {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .warning {
+            background: rgba(217, 119, 6, 0.1);
+            border: 1px solid rgba(217, 119, 6, 0.3);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+            color: #fcd34d;
+        }
+
+        /* Screen Reader Only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tabs button {
+                justify-content: center;
+                border-bottom: 1px solid var(--border);
+                border-right: none;
+            }
+
+            .nav-tabs button[aria-selected="true"] {
+                border-bottom-color: var(--border);
+                background: var(--primary-color);
+                color: white;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .results-actions {
+                flex-direction: column;
+            }
+
+            .result-item {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .result-icon {
+                align-self: flex-start;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+
+            .skip-link,
+            nav,
+            .form-actions,
+            .results-actions,
+            footer {
+                display: none;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+
+            .tab-panel {
+                display: block !important;
+            }
+
+            .results-content {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+        }
+
+        /* High Contrast Mode */
+        @media (prefers-contrast: high) {
+            :root {
+                --background: #000000;
+                --surface: #1a1a1a;
+                --surface-light: #333333;
+                --text-primary: #ffffff;
+                --border: #666666;
+                --primary-color: #0066ff;
+                --success-color: #00cc00;
+                --warning-color: #ffcc00;
+                --error-color: #ff0000;
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+
+    <!-- Add CSS styles for AI remediation -->
+    <style>
+        /* AI Remediation Styles */
+        .ai-remediation-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .remediation-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .remediation-header h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .config-options {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .config-options label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+
+        .remediation-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        /* AI Progress Styles */
+        .ai-progress-details {
+            text-align: center;
+        }
+
+        .progress-stats {
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .ai-agents-status {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .agent-indicator {
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .agent-indicator.active {
+            background: rgba(37, 99, 235, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .agent-indicator.completed {
+            background: rgba(5, 150, 105, 0.2);
+            border-color: var(--success-color);
+        }
+
+        .agent-indicator.failed {
+            background: rgba(220, 38, 38, 0.2);
+            border-color: var(--error-color);
+        }
+
+        /* AI Results Styles */
+        .ai-results-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-top: 2rem;
+            overflow: hidden;
+        }
+
+        .ai-results-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ai-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .ai-summary-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--surface-light);
+            border-radius: 6px;
+        }
+
+        .ai-summary-item .value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .ai-summary-item .label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .ai-summary-item.success .value {
+            color: var(--success-color);
+        }
+
+        .ai-summary-item.warning .value {
+            color: var(--warning-color);
+        }
+
+        .ai-summary-item.error .value {
+            color: var(--error-color);
+        }
+
+        .ai-results-tabs {
+            display: flex;
+            background: var(--surface-light);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ai-tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 1rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .ai-tab:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .ai-tab.active {
+            color: var(--primary-color);
+            background: var(--surface);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .ai-tab-panel {
+            display: none;
+            padding: 1.5rem;
+        }
+
+        .ai-tab-panel.active {
+            display: block;
+        }
+
+        /* Fix Item Styles */
+        .ai-fix-item {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .ai-fix-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .ai-fix-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            background: var(--success-color);
+            color: white;
+        }
+
+        .ai-fix-icon.warning {
+            background: var(--warning-color);
+        }
+
+        .ai-fix-icon.error {
+            background: var(--error-color);
+        }
+
+        .ai-fix-title {
+            flex: 1;
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .ai-fix-confidence {
+            background: var(--surface-light);
+            color: var(--text-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .ai-fix-details {
+            margin-bottom: 1rem;
+        }
+
+        .ai-fix-explanation {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .ai-fix-code {
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            overflow-x: auto;
+        }
+
+        .ai-fix-code pre {
+            margin: 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+        }
+
+        .ai-fix-before {
+            border-left: 3px solid var(--error-color);
+        }
+
+        .ai-fix-after {
+            border-left: 3px solid var(--success-color);
+        }
+
+        /* Before/After Comparison */
+        .before-after-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .before-section,
+        .after-section {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .before-section h4,
+        .after-section h4 {
+            margin: 0;
+            padding: 1rem;
+            background: var(--surface-light);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .before-section pre,
+        .after-section pre {
+            margin: 0;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+
+        .before-section {
+            border-left: 3px solid var(--error-color);
+        }
+
+        .after-section {
+            border-left: 3px solid var(--success-color);
+        }
+
+        /* Code Container */
+        .code-container {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+            max-height: 400px;
+            overflow: auto;
+        }
+
+        .code-container pre {
+            margin: 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .code-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Conflict Styles */
+        .conflict-item {
+            background: rgba(217, 119, 6, 0.1);
+            border: 1px solid rgba(217, 119, 6, 0.3);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .conflict-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .conflict-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--warning-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        .conflict-options {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .conflict-option {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .conflict-option:hover {
+            border-color: var(--primary-color);
+        }
+
+        .conflict-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .config-options {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .remediation-actions {
+                flex-direction: column;
+            }
+
+            .ai-results-tabs {
+                flex-direction: column;
+            }
+
+            .before-after-container {
+                grid-template-columns: 1fr;
+            }
+
+            .code-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Animation for AI processing */
+        @keyframes aiThinking {
+
+            0%,
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            25%,
+            75% {
+                opacity: 0.7;
+                transform: scale(1.1);
+            }
+        }
+
+        .ai-thinking {
+            animation: aiThinking 2s infinite;
+        }
+
+        /* Status indicators */
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-indicator.pending {
+            background: var(--text-muted);
+        }
+
+        .status-indicator.processing {
+            background: var(--primary-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        .status-indicator.completed {
+            background: var(--success-color);
+        }
+
+        .status-indicator.failed {
+            background: var(--error-color);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header role="banner">
+        <div class="container">
+            <h1>
+                <span class="icon" aria-hidden="true">♿</span>
+                WCAG Full Compliance Checker
+            </h1>
+            <p class="subtitle">Comprehensive accessibility analysis for WCAG 2.0, 2.1, and 2.2</p>
+        </div>
+    </header>
+
+    <nav role="navigation" aria-label="Main navigation">
+        <div class="container">
+            <ul class="nav-tabs" role="tablist">
+                <li role="presentation">
+                    <button role="tab" aria-selected="true" aria-controls="check-panel" id="check-tab" data-tab="check">
+                        Check Page
+                    </button>
+                </li>
+                <li role="presentation">
+                    <button role="tab" aria-selected="false" aria-controls="results-panel" id="results-tab"
+                        data-tab="results">
+                        Results
+                        <span class="badge" id="results-badge" aria-label="0 issues found">0</span>
+                    </button>
+                </li>
+                <li role="presentation">
+                    <button role="tab" aria-selected="false" aria-controls="criteria-panel" id="criteria-tab"
+                        data-tab="criteria">
+                        View Criteria
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main-content" role="main">
+        <div class="container">
+            <!-- Check Panel -->
+            <div id="check-panel" role="tabpanel" aria-labelledby="check-tab" class="tab-panel active">
+                <div class="panel-header">
+                    <h2>Accessibility Compliance Check</h2>
+                    <p>Enter a URL or paste HTML content to analyze for WCAG compliance</p>
+                </div>
+
+                <form id="check-form" class="check-form">
+                    <fieldset class="config-section">
+                        <legend>Check Configuration</legend>
+
+                        <div class="form-group">
+                            <label for="wcag-version">WCAG Version:</label>
+                            <select id="wcag-version" name="wcag-version">
+                                <option value="2.0">WCAG 2.0</option>
+                                <option value="2.1" selected>WCAG 2.1</option>
+                                <option value="2.2">WCAG 2.2</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="compliance-level">Compliance Level:</label>
+                            <select id="compliance-level" name="compliance-level">
+                                <option value="A">Level A (Minimum)</option>
+                                <option value="AA" selected>Level AA (Standard)</option>
+                                <option value="AAA">Level AAA (Enhanced)</option>
+                            </select>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="input-section">
+                        <legend>Content to Check</legend>
+
+                        <div class="input-method-tabs">
+                            <button type="button" class="method-tab active" data-method="url">URL</button>
+                            <button type="button" class="method-tab" data-method="html">HTML Code</button>
+                            <button type="button" class="method-tab" data-method="live">Live Page Analysis</button>
+                        </div>
+
+                        <div id="url-input" class="input-method active">
+                            <label for="url">Website URL:</label>
+                            <input type="url" id="url" name="url" placeholder="https://example.com"
+                                aria-describedby="url-help">
+                            <div id="url-help" class="help-text">
+                                Enter the full URL of the page you want to check
+                            </div>
+                        </div>
+
+                        <div id="html-input" class="input-method">
+                            <label for="html-content">HTML Content:</label>
+                            <textarea id="html-content" name="html-content" rows="10"
+                                placeholder="Paste your HTML content here..." aria-describedby="html-help"></textarea>
+                            <div id="html-help" class="help-text">
+                                Paste the complete HTML content including CSS and JavaScript
+                            </div>
+                        </div>
+
+                        <div id="live-input" class="input-method">
+                            <div class="live-analysis-info">
+                                <h3>Live Page Analysis</h3>
+                                <p>This will analyze the current page's accessibility in real-time.</p>
+                                <div class="warning">
+                                    <strong>Note:</strong> Live analysis will check this very page for accessibility
+                                    compliance.
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary" id="start-check">
+                            <span class="btn-icon" aria-hidden="true">🔍</span>
+                            <span class="btn-text">Start Accessibility Check</span>
+                        </button>
+                        <button type="button" class="btn-secondary" id="clear-form">Clear</button>
+                    </div>
+                </form>
+
+                <div id="progress-section" class="progress-section hidden">
+                    <h3>Checking Accessibility...</h3>
+                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                        aria-valuemax="100">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div id="progress-text" class="progress-text">Initializing...</div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div id="results-panel" role="tabpanel" aria-labelledby="results-tab" class="tab-panel">
+                <div class="panel-header">
+                    <h2>Accessibility Results</h2>
+                    <div class="results-summary" id="results-summary"></div>
+                </div>
+
+                <div class="results-filters">
+                    <fieldset>
+                        <legend>Filter Results</legend>
+                        <div class="filter-group">
+                            <label>
+                                <input type="checkbox" id="filter-errors" checked>
+                                <span class="filter-label error">Errors</span>
+                                <span class="count" id="error-count">0</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" id="filter-warnings" checked>
+                                <span class="filter-label warning">Warnings</span>
+                                <span class="count" id="warning-count">0</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" id="filter-passed" checked>
+                                <span class="filter-label success">Passed</span>
+                                <span class="count" id="passed-count">0</span>
+                            </label>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div id="results-content" class="results-content">
+                    <div class="empty-state">
+                        <div class="empty-icon" aria-hidden="true">📋</div>
+                        <h3>No Results Yet</h3>
+                        <p>Run an accessibility check to see results here.</p>
+                    </div>
+                </div>
+
+                <div class="results-actions">
+                    <button type="button" class="btn-secondary" id="export-results">
+                        <span class="btn-icon" aria-hidden="true">📥</span>
+                        Export Report
+                    </button>
+                    <button type="button" class="btn-secondary" id="print-results">
+                        <span class="btn-icon" aria-hidden="true">🖨️</span>
+                        Print Report
+                    </button>
+                </div>
+ <!-- AI Remediation Section -->
+                <div class="ai-remediation-section" id="ai-remediation-section" style="display: none;">
+                    <div class="remediation-header">
+                        <h3>🤖 AI Auto-Fix</h3>
+                        <p>Let AI automatically fix accessibility issues in your code</p>
+                    </div>
+
+                    <div class="remediation-config">
+                        <fieldset>
+                            <legend>Fix Options</legend>
+                            <div class="config-options">
+                                <label>
+                                    <input type="checkbox" id="prioritize-issues" checked>
+                                    Prioritize critical issues first
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="preserve-styling" checked>
+                                    Preserve existing styling
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="add-comments" checked>
+                                    Add explanatory comments
+                                </label>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div class="remediation-actions">
+                        <button type="button" class="btn-secondary" id="preview-fixes">
+                            <span class="btn-icon">👁️</span>
+                            Preview Fixes
+                        </button>
+                        <button type="button" class="btn-primary" id="auto-fix-issues">
+                            <span class="btn-icon">🚀</span>
+                            <span class="btn-text">Auto-Fix Issues</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- AI Progress Section -->
+                <div id="ai-progress-section" class="progress-section hidden">
+                    <h3>🤖 AI is fixing your accessibility issues...</h3>
+                    <div class="ai-progress-details">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                            aria-valuemax="100">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <div id="ai-progress-text" class="progress-text">Initializing AI agents...</div>
+                        <div class="progress-stats">
+                            <span id="progress-completed">0</span> of <span id="progress-total">0</span> issues
+                            processed
+                        </div>
+                    </div>
+                    <div class="ai-agents-status" id="ai-agents-status">
+                        <!-- Agent status indicators will be added dynamically -->
+                    </div>
+                </div>
+
+                <!-- AI Results Section -->
+                <div id="ai-results-section" class="ai-results-section hidden">
+                    <div class="ai-results-header">
+                        <h3>🎯 AI Remediation Results</h3>
+                        <div class="ai-summary" id="ai-summary">
+                            <!-- Summary will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="ai-results-tabs">
+                        <button class="ai-tab active" data-tab="fixes">Applied Fixes</button>
+                        <button class="ai-tab" data-tab="conflicts">Conflicts</button>
+                        <button class="ai-tab" data-tab="preview">Before/After</button>
+                        <button class="ai-tab" data-tab="code">Modified Code</button>
+                    </div>
+
+                    <div class="ai-tab-content">
+                        <div id="ai-fixes-tab" class="ai-tab-panel active">
+                            <div id="ai-fixes-list" class="ai-fixes-list">
+                                <!-- Fixes will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div id="ai-conflicts-tab" class="ai-tab-panel">
+                            <div id="ai-conflicts-list" class="ai-conflicts-list">
+                                <!-- Conflicts will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div id="ai-preview-tab" class="ai-tab-panel">
+                            <div class="before-after-container">
+                                <div class="before-section">
+                                    <h4>Before (Original)</h4>
+                                    <pre><code id="before-code"></code></pre>
+                                </div>
+                                <div class="after-section">
+                                    <h4>After (AI Fixed)</h4>
+                                    <pre><code id="after-code"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="ai-code-tab" class="ai-tab-panel">
+                            <div class="code-actions">
+                                <button class="btn-secondary" id="copy-fixed-code">
+                                    <span class="btn-icon">📋</span>
+                                    Copy Fixed Code
+                                </button>
+                                <button class="btn-secondary" id="download-fixed-code">
+                                    <span class="btn-icon">💾</span>
+                                    Download Fixed HTML
+                                </button>
+                            </div>
+                            <div class="code-container">
+                                <pre><code id="fixed-html-code"></code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ai-results-actions">
+                        <button type="button" class="btn-secondary" id="export-ai-report">
+                            <span class="btn-icon">📊</span>
+                            Export AI Report
+                        </button>
+                        <button type="button" class="btn-primary" id="apply-all-fixes">
+                            <span class="btn-icon">✅</span>
+                            Apply All Fixes
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Criteria Panel -->
+            <div id="criteria-panel" role="tabpanel" aria-labelledby="criteria-tab" class="tab-panel">
+                <div class="panel-header">
+                    <h2>WCAG Success Criteria</h2>
+                    <p>Browse the complete WCAG guidelines and success criteria</p>
+                </div>
+
+                <div class="criteria-filters">
+                    <fieldset>
+                        <legend>Filter Criteria</legend>
+                        <div class="filter-row">
+                            <label for="criteria-version">Version:</label>
+                            <select id="criteria-version">
+                                <option value="">All Versions</option>
+                                <option value="2.0">WCAG 2.0</option>
+                                <option value="2.1">WCAG 2.1</option>
+                                <option value="2.2">WCAG 2.2</option>
+                            </select>
+                        </div>
+                        <div class="filter-row">
+                            <label for="criteria-level">Level:</label>
+                            <select id="criteria-level">
+                                <option value="">All Levels</option>
+                                <option value="A">Level A</option>
+                                <option value="AA">Level AA</option>
+                                <option value="AAA">Level AAA</option>
+                            </select>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div id="criteria-content" class="criteria-content">
+                    <!-- Criteria will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer role="contentinfo">
+        <div class="container">
+            <p>&copy; 2024 WCAG Compliance Checker. Built for accessibility compliance testing.</p>
+            <p>
+                <a href="#privacy">Privacy Policy</a> |
+                <a href="#help">Help & Documentation</a> |
+                <a href="#contact">Contact</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Live Region for Announcements -->
+    <div id="announcements" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+
+    <script>
+        // Main application logic for WCAG Compliance Checker
+        class WCAGComplianceApp {
+            constructor() {
+                this.apiBaseUrl = '/api';
+                this.currentResults = null;
+                this.wcagCriteria = null;
+                this.isChecking = false;
+                this.init();
+            }
+
+            async init() {
+                await this.checkApiHealth();
+                this.setupEventListeners();
+                this.setupTabs();
+                await this.loadWcagCriteria();
+                this.announceToUser('WCAG Compliance Checker loaded and ready to use.');
+            }
+
+            async checkApiHealth() {
+                try {
+                    const response = await fetch(`${this.apiBaseUrl}/health`);
+                    const data = await response.json();
+                    if (!data.success) {
+                        throw new Error('API health check failed');
+                    }
+                } catch (error) {
+                    console.error('API health check failed:', error);
+                    this.showError('Unable to connect to the accessibility checking service. Please try again later.');
+                }
+            }
+
+            setupEventListeners() {
+                // Form submission
+                const checkForm = document.getElementById('check-form');
+                checkForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.startAccessibilityCheck();
+                });
+
+                // Clear form
+                const clearButton = document.getElementById('clear-form');
+                clearButton.addEventListener('click', () => {
+                    this.clearForm();
+                });
+
+                // Input method tabs
+                const methodTabs = document.querySelectorAll('.method-tab');
+                methodTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        this.switchInputMethod(tab.dataset.method);
+                    });
+                });
+
+                // Results filters
+                const filterCheckboxes = document.querySelectorAll('#filter-errors, #filter-warnings, #filter-passed');
+                filterCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        this.filterResults();
+                    });
+                });
+
+                // Criteria filters
+                const criteriaVersion = document.getElementById('criteria-version');
+                const criteriaLevel = document.getElementById('criteria-level');
+
+                criteriaVersion.addEventListener('change', () => {
+                    this.filterCriteria();
+                });
+
+                criteriaLevel.addEventListener('change', () => {
+                    this.filterCriteria();
+                });
+
+                // Export and print
+                const exportButton = document.getElementById('export-results');
+                const printButton = document.getElementById('print-results');
+
+                exportButton.addEventListener('click', () => {
+                    this.exportResults();
+                });
+
+                printButton.addEventListener('click', () => {
+                    this.printResults();
+                });
+
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    this.handleKeyboardNavigation(e);
+                });
+            }
+
+            setupTabs() {
+                const tabButtons = document.querySelectorAll('[role="tab"]');
+
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const targetPanel = button.getAttribute('aria-controls');
+                        this.switchTab(button, targetPanel);
+                    });
+
+                    button.addEventListener('keydown', (e) => {
+                        this.handleTabKeydown(e, tabButtons);
+                    });
+                });
+            }
+
+            switchTab(activeButton, targetPanelId) {
+                // Update button states
+                const allButtons = document.querySelectorAll('[role="tab"]');
+                allButtons.forEach(button => {
+                    button.setAttribute('aria-selected', 'false');
+                });
+                activeButton.setAttribute('aria-selected', 'true');
+
+                // Update panel visibility
+                const allPanels = document.querySelectorAll('[role="tabpanel"]');
+                allPanels.forEach(panel => {
+                    panel.classList.remove('active');
+                });
+
+                const targetPanel = document.getElementById(targetPanelId);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                }
+
+                // Focus management
+                activeButton.focus();
+
+                // Announce tab change
+                this.announceToUser(`Switched to ${activeButton.textContent.trim()} tab`);
+            }
+
+            handleTabKeydown(e, tabButtons) {
+                const currentIndex = Array.from(tabButtons).indexOf(e.target);
+                let newIndex;
+
+                switch (e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        newIndex = currentIndex > 0 ? currentIndex - 1 : tabButtons.length - 1;
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        newIndex = currentIndex < tabButtons.length - 1 ? currentIndex + 1 : 0;
+                        break;
+                    case 'Home':
+                        e.preventDefault();
+                        newIndex = 0;
+                        break;
+                    case 'End':
+                        e.preventDefault();
+                        newIndex = tabButtons.length - 1;
+                        break;
+                    default:
+                        return;
+                }
+
+                if (newIndex !== undefined) {
+                    const newButton = tabButtons[newIndex];
+                    const targetPanel = newButton.getAttribute('aria-controls');
+                    this.switchTab(newButton, targetPanel);
+                }
+            }
+
+            switchInputMethod(method) {
+                // Update tab states
+                const methodTabs = document.querySelectorAll('.method-tab');
+                methodTabs.forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelector(`.method-tab[data-method="${method}"]`).classList.add('active');
+
+                // Update input method visibility
+                const inputMethods = document.querySelectorAll('.input-method');
+                inputMethods.forEach(input => {
+                    input.classList.remove('active');
+                });
+                document.getElementById(`${method}-input`).classList.add('active');
+
+                // Focus the appropriate input
+                if (method === 'url') {
+                    document.getElementById('url').focus();
+                } else if (method === 'html') {
+                    document.getElementById('html-content').focus();
+                }
+            }
+
+            clearForm() {
+                document.getElementById('url').value = '';
+                document.getElementById('html-content').value = '';
+
+                // Reset to URL method
+                this.switchInputMethod('url');
+
+                this.announceToUser('Form cleared');
+            }
+
+            async startAccessibilityCheck() {
+                if (this.isChecking) {
+                    return;
+                }
+
+                this.isChecking = true;
+                const startButton = document.getElementById('start-check');
+                const btnText = startButton.querySelector('.btn-text');
+                const originalText = btnText.textContent;
+
+                // Update button state
+                startButton.disabled = true;
+                btnText.textContent = 'Checking...';
+                startButton.insertAdjacentHTML('afterbegin', '<div class="spinner"></div>');
+
+                const wcagVersion = document.getElementById('wcag-version').value;
+                const complianceLevel = document.getElementById('compliance-level').value;
+                const activeMethod = document.querySelector('.method-tab.active').dataset.method;
+
+                // Show progress section
+                const progressSection = document.getElementById('progress-section');
+                progressSection.classList.remove('hidden');
+                this.updateProgress(0, 'Starting accessibility check...');
+
+                try {
+                    let results;
+
+                    if (activeMethod === 'url') {
+                        const url = document.getElementById('url').value.trim();
+                        if (!url) {
+                            throw new Error('Please enter a URL');
+                        }
+                        results = await this.checkURL(url, wcagVersion, complianceLevel);
+                    } else if (activeMethod === 'html') {
+                        const htmlContent = document.getElementById('html-content').value.trim();
+                        if (!htmlContent) {
+                            throw new Error('Please enter HTML content');
+                        }
+                        results = await this.checkHTML(htmlContent, wcagVersion, complianceLevel);
+                    } else if (activeMethod === 'live') {
+                        results = await this.checkCurrentPage(wcagVersion, complianceLevel);
+                    }
+
+                    this.currentResults = results;
+                    this.displayResults();
+                    this.updateResultsTab();
+
+                    // Switch to results tab
+                    const resultsTab = document.getElementById('results-tab');
+                    this.switchTab(resultsTab, 'results-panel');
+
+                } catch (error) {
+                    this.showError(error.message);
+                } finally {
+                    // Reset button state
+                    this.isChecking = false;
+                    startButton.disabled = false;
+                    btnText.textContent = originalText;
+                    const spinner = startButton.querySelector('.spinner');
+                    if (spinner) {
+                        spinner.remove();
+                    }
+
+                    // Hide progress section
+                    progressSection.classList.add('hidden');
+                }
+            }
+
+            async checkURL(url, wcagVersion, complianceLevel) {
+                this.updateProgress(25, 'Connecting to website...');
+
+                const response = await fetch(`${this.apiBaseUrl}/check/url`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        wcagVersion: wcagVersion,
+                        complianceLevel: complianceLevel,
+                        includeScreenshots: false,
+                        waitForNetworkIdle: true,
+                        timeout: 30000
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to check URL');
+                }
+
+                this.updateProgress(75, 'Analyzing page content...');
+                const data = await response.json();
+                this.updateProgress(100, 'Analysis complete!');
+
+                return data.data;
+            }
+
+            async checkHTML(htmlContent, wcagVersion, complianceLevel) {
+                this.updateProgress(25, 'Parsing HTML content...');
+
+                const response = await fetch(`${this.apiBaseUrl}/check/html`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        html: htmlContent,
+                        wcagVersion: wcagVersion,
+                        complianceLevel: complianceLevel,
+                        baseUrl: window.location.origin
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to check HTML');
+                }
+
+                this.updateProgress(75, 'Analyzing HTML structure...');
+                const data = await response.json();
+                this.updateProgress(100, 'Analysis complete!');
+
+                return data.data;
+            }
+
+            async checkCurrentPage(wcagVersion, complianceLevel) {
+                this.updateProgress(25, 'Analyzing current page...');
+
+                // Get current page HTML
+                const htmlContent = document.documentElement.outerHTML;
+
+                const response = await fetch(`${this.apiBaseUrl}/check/html`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        html: htmlContent,
+                        wcagVersion: wcagVersion,
+                        complianceLevel: complianceLevel,
+                        baseUrl: window.location.origin
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to check current page');
+                }
+
+                this.updateProgress(75, 'Analyzing page accessibility...');
+                const data = await response.json();
+                this.updateProgress(100, 'Analysis complete!');
+
+                return data.data;
+            }
+
+            updateProgress(percentage, message) {
+                const progressBar = document.querySelector('.progress-fill');
+                const progressText = document.getElementById('progress-text');
+
+                progressBar.style.width = `${percentage}%`;
+                progressText.textContent = message;
+
+                // Update ARIA attributes
+                const progressElement = document.querySelector('.progress-bar');
+                progressElement.setAttribute('aria-valuenow', percentage);
+
+                // Announce major milestones
+                if (percentage === 25 || percentage === 50 || percentage === 75 || percentage === 100) {
+                    this.announceToUser(`${percentage}% complete`);
+                }
+            }
+
+            showError(message) {
+                this.announceToUser(`Error: ${message}`);
+
+                // Create error message in the progress section
+                const progressSection = document.getElementById('progress-section');
+                progressSection.innerHTML = `
+                    <div class="error-message">
+                        <h3>Error</h3>
+                        <p>${message}</p>
+                        <button type="button" class="btn-secondary" onclick="this.parentElement.parentElement.classList.add('hidden')">
+                            Dismiss
+                        </button>
+                    </div>
+                `;
+            }
+
+            showAIOptions() {
+                if (this.currentResults && this.currentResults.results) {
+                    const issues = this.currentResults.results.filter(r =>
+                        r.type === 'error' || r.type === 'warning'
+                    );
+
+                    if (issues.length > 0) {
+                        this.aiManager.showAIRemediationSection();
+                        this.announceToUser(`Found ${issues.length} issues that can be auto-fixed with AI.`);
+
+                    } else {
+                        this.announceToUser('No issues found that can be auto-fixed.');
+                    }
+                } else {
+                    this.showError('Run an accessibility check first to see AI fix options.');
+                }
+            }
+
+            displayResults() {
+                const resultsContent = document.getElementById('results-content');
+
+                if (!this.currentResults || !this.currentResults.results || this.currentResults.results.length === 0) {
+                    resultsContent.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon" aria-hidden="true">✅</div>
+                            <h3>No Issues Found</h3>
+                            <p>Great! No accessibility issues were detected.</p>
+                        </div>
+                    `;
+                    this.updateResultsSummary({ total: 0, errors: 0, warnings: 0, passed: 0, score: 100 });
+                    return;
+                }
+
+                // Update summary
+                this.updateResultsSummary(this.currentResults.summary);
+
+                // Generate results HTML
+                let resultsHTML = '';
+
+                this.currentResults.results.forEach((result, index) => {
+                    const iconMap = {
+                        error: '❌',
+                        warning: '⚠️',
+                        success: '✅',
+                        info: 'ℹ️'
+                    };
+
+                    resultsHTML += `
+                        <div class="result-item" data-type="${result.type}" id="result-${index}">
+                            <div class="result-icon ${result.type}" aria-hidden="true">
+                                ${iconMap[result.type]}
+                            </div>
+                            <div class="result-content">
+                                <h3 class="result-title">${this.escapeHtml(result.title)}</h3>
+                                <p class="result-description">${this.escapeHtml(result.description)}</p>
+                                ${result.suggestion ? `
+                                    <div class="result-suggestion">
+                                        <strong>How to fix:</strong> ${this.escapeHtml(result.suggestion)}
+                                    </div>
+                                ` : ''}
+                                ${result.element && result.element.selector ? `
+                                    <div class="result-details">
+                                        <strong>Element:</strong> <code>${this.escapeHtml(result.element.selector)}</code>
+                                    </div>
+                                ` : ''}
+                                ${result.wcagInfo ? `
+                                    <a href="#criteria-${result.criterion}" class="wcag-reference" 
+                                       onclick="app.showWCAGCriterion('${result.criterion}')">
+                                        WCAG ${result.criterion} - ${result.wcagInfo.level} (${result.wcagInfo.version})
+                                    </a>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                resultsContent.innerHTML = resultsHTML;
+
+                // Update filter counts
+                this.updateFilterCounts();
+
+                this.showAIOptions();
+
+                const summary = this.currentResults.summary;
+                this.announceToUser(`Accessibility check complete. ${summary.total} items found: ${summary.errors} errors, ${summary.warnings} warnings, ${summary.passed} passed.`);
+            }
+
+            updateResultsSummary(summary) {
+                const summaryElement = document.getElementById('results-summary');
+
+                summaryElement.innerHTML = `
+                    <div class="summary-grid">
+                        <div class="summary-item score">
+                            <h3>Accessibility Score</h3>
+                            <div class="score">${summary.score}%</div>
+                        </div>
+                        <div class="summary-item">
+                            <h3>Total Items</h3>
+                            <div class="count">${summary.total}</div>
+                        </div>
+                        <div class="summary-item error">
+                            <h3>Errors</h3>
+                            <div class="count">${summary.errors}</div>
+                        </div>
+                        <div class="summary-item warning">
+                            <h3>Warnings</h3>
+                            <div class="count">${summary.warnings}</div>
+                        </div>
+                        <div class="summary-item success">
+                            <h3>Passed</h3>
+                            <div class="count">${summary.passed}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            updateResultsTab() {
+                const resultsBadge = document.getElementById('results-badge');
+
+                if (!this.currentResults || !this.currentResults.summary) {
+                    resultsBadge.textContent = '0';
+                    resultsBadge.setAttribute('aria-label', '0 issues found');
+                    return;
+                }
+
+                const summary = this.currentResults.summary;
+                const issueCount = summary.errors + summary.warnings;
+
+                resultsBadge.textContent = issueCount;
+                resultsBadge.setAttribute('aria-label', `${issueCount} issues found`);
+
+                if (issueCount === 0) {
+                    resultsBadge.style.background = 'var(--success-color)';
+                } else if (summary.errors > 0) {
+                    resultsBadge.style.background = 'var(--error-color)';
+                } else {
+                    resultsBadge.style.background = 'var(--warning-color)';
+                }
+            }
+
+            updateFilterCounts() {
+                if (!this.currentResults || !this.currentResults.summary) {
+                    return;
+                }
+
+                const errorCount = document.getElementById('error-count');
+                const warningCount = document.getElementById('warning-count');
+                const passedCount = document.getElementById('passed-count');
+
+                const summary = this.currentResults.summary;
+
+                errorCount.textContent = summary.errors;
+                warningCount.textContent = summary.warnings;
+                passedCount.textContent = summary.passed;
+            }
+
+            filterResults() {
+                const showErrors = document.getElementById('filter-errors').checked;
+                const showWarnings = document.getElementById('filter-warnings').checked;
+                const showPassed = document.getElementById('filter-passed').checked;
+
+                const resultItems = document.querySelectorAll('.result-item');
+                let visibleCount = 0;
+
+                resultItems.forEach(item => {
+                    const type = item.dataset.type;
+                    let shouldShow = false;
+
+                    if (type === 'error' && showErrors) shouldShow = true;
+                    if (type === 'warning' && showWarnings) shouldShow = true;
+                    if ((type === 'success' || type === 'info') && showPassed) shouldShow = true;
+
+                    if (shouldShow) {
+                        item.style.display = 'flex';
+                        visibleCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                this.announceToUser(`Filtered results: ${visibleCount} items shown`);
+            }
+
+            async loadWcagCriteria() {
+                try {
+                    const response = await fetch(`${this.apiBaseUrl}/wcag-criteria`);
+                    const data = await response.json();
+
+                    if (data.success) {
+                        this.wcagCriteria = data.data;
+                        this.populateCriteria();
+                    }
+                } catch (error) {
+                    console.error('Failed to load WCAG criteria:', error);
+                }
+            }
+
+            populateCriteria() {
+                if (!this.wcagCriteria) {
+                    return;
+                }
+
+                const criteriaContent = document.getElementById('criteria-content');
+                let criteriaHTML = '';
+
+                Object.entries(this.wcagCriteria).forEach(([guidelineId, guideline]) => {
+                    criteriaHTML += `
+                        <div class="criteria-group" id="guideline-${guidelineId}">
+                            <button class="criteria-header" 
+                                    onclick="app.toggleCriteriaGroup('${guidelineId}')"
+                                    aria-expanded="false"
+                                    aria-controls="criteria-body-${guidelineId}">
+                                <span class="criteria-toggle" aria-hidden="true">▶</span>
+                                <h3 class="criteria-title">Guideline ${guidelineId}: ${this.escapeHtml(guideline.title)}</h3>
+                            </button>
+                            <div class="criteria-body" id="criteria-body-${guidelineId}">
+                                <p class="criteria-description">${this.escapeHtml(guideline.description)}</p>
+                                <ul class="criteria-items">
+                                    ${Object.entries(guideline.criteria).map(([criterionId, criterion]) => `
+                                        <li class="criteria-item" 
+                                            data-version="${criterion.version}" 
+                                            data-level="${criterion.level}"
+                                            id="criteria-${criterionId}">
+                                            <h4 class="criteria-item-title">
+                                                ${criterionId}: ${this.escapeHtml(criterion.title)}
+                                                <span class="criteria-level">${criterion.level}</span>
+                                            </h4>
+                                            <p class="criteria-item-description">${this.escapeHtml(criterion.description)}</p>
+                                            <ul>
+                                                ${criterion.guidelines.map(guideline => `<li>${this.escapeHtml(guideline)}</li>`).join('')}
+                                            </ul>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                criteriaContent.innerHTML = criteriaHTML;
+            }
+
+            toggleCriteriaGroup(guidelineId) {
+                const group = document.getElementById(`guideline-${guidelineId}`);
+                const header = group.querySelector('.criteria-header');
+                const isExpanded = header.getAttribute('aria-expanded') === 'true';
+
+                header.setAttribute('aria-expanded', !isExpanded);
+                group.classList.toggle('expanded');
+
+                const action = isExpanded ? 'collapsed' : 'expanded';
+                this.announceToUser(`Guideline ${guidelineId} ${action}`);
+            }
+
+            filterCriteria() {
+                const versionFilter = document.getElementById('criteria-version').value;
+                const levelFilter = document.getElementById('criteria-level').value;
+
+                const criteriaItems = document.querySelectorAll('.criteria-item');
+
+                criteriaItems.forEach(item => {
+                    const itemVersion = item.dataset.version;
+                    const itemLevel = item.dataset.level;
+
+                    let shouldShow = true;
+
+                    if (versionFilter && itemVersion !== versionFilter) {
+                        shouldShow = false;
+                    }
+
+                    if (levelFilter && itemLevel !== levelFilter) {
+                        shouldShow = false;
+                    }
+
+                    item.style.display = shouldShow ? 'block' : 'none';
+                });
+
+                // Hide empty guidelines
+                const guidelines = document.querySelectorAll('.criteria-group');
+                guidelines.forEach(guideline => {
+                    const visibleItems = guideline.querySelectorAll('.criteria-item[style="display: block"], .criteria-item:not([style*="display: none"])');
+                    guideline.style.display = visibleItems.length > 0 ? 'block' : 'none';
+                });
+            }
+
+            showWCAGCriterion(criterionId) {
+                // Switch to criteria tab
+                const criteriaTab = document.getElementById('criteria-tab');
+                this.switchTab(criteriaTab, 'criteria-panel');
+
+                // Scroll to specific criterion
+                setTimeout(() => {
+                    const criterionElement = document.getElementById(`criteria-${criterionId}`);
+                    if (criterionElement) {
+                        criterionElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        criterionElement.style.outline = '2px solid var(--primary-color)';
+                        setTimeout(() => {
+                            criterionElement.style.outline = '';
+                        }, 3000);
+                    }
+                }, 300);
+            }
+
+            async exportResults() {
+                if (!this.currentResults) {
+                    this.announceToUser('No results to export');
+                    return;
+                }
+
+        const format = prompt('Export format (json, csv, html):', 'html');
+
+        if (!format || !['json', 'csv', 'html'].includes(format.toLowerCase())) {
+            return;
+        }
+
+        try {
+            let content;
+            let mimeType;
+            let extension;
+
+            switch (format.toLowerCase()) {
+                case 'json':
+                    content = JSON.stringify(this.currentResults, null, 2);
+                    mimeType = 'application/json';
+                    extension = 'json';
+                    break;
+                case 'csv':
+                    content = this.generateCSVReport();
+                    mimeType = 'text/csv';
+                    extension = 'csv';
+                    break;
+                case 'html':
+                default:
+                    content = this.generateHTMLReport();
+                    mimeType = 'text/html';
+                    extension = 'html';
+                    break;
+            }
+
+            const blob = new Blob([content], { type: mimeType });
+            const timestamp = new Date().toISOString().split('T')[0];
+            const filename = `wcag-report-${timestamp}.${extension}`;
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+
+            URL.revokeObjectURL(url);
+
+            this.announceToUser(`Report exported as ${filename}`);
+        } catch (error) {
+            this.showError('Failed to export results');
+        }
+    }
+
+    generateHTMLReport() {
+        const results = this.currentResults.results;
+        const summary = this.currentResults.summary;
+        
+        return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WCAG Accessibility Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        .header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid #333; padding-bottom: 20px; }
+        .summary { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+        .summary-item { text-align: center; }
+        .summary-item h3 { margin: 0; color: #666; font-size: 0.9em; }
+        .summary-item .value { font-size: 2em; font-weight: bold; margin: 10px 0; }
+        .error { color: #dc2626; }
+        .warning { color: #d97706; }
+        .success { color: #059669; }
+        .result-item { border: 1px solid #ddd; margin-bottom: 20px; padding: 20px; border-radius: 8px; }
+        .result-item.error { border-left: 4px solid #dc2626; }
+        .result-item.warning { border-left: 4px solid #d97706; }
+        .result-item.success { border-left: 4px solid #059669; }
+        .result-title { margin: 0 0 10px 0; }
+        .result-description { margin: 10px 0; color: #666; }
+        .result-suggestion { background: #e3f2fd; padding: 10px; border-radius: 4px; margin: 10px 0; }
+        .wcag-ref { display: inline-block; background: #333; color: white; padding: 4px 8px; border-radius: 4px; text-decoration: none; font-size: 0.8em; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛡️ WCAG Accessibility Report</h1>
+        <p>Generated on ${new Date().toLocaleDateString()} | WCAG ${this.currentResults.wcagVersion} Level ${this.currentResults.complianceLevel}</p>
+        ${this.currentResults.url ? `<p>URL: ${this.currentResults.url}</p>` : ''}
+    </div>
+    
+    <div class="summary">
+        <h2>Summary</h2>
+        <div class="summary-grid">
+            <div class="summary-item">
+                <h3>Accessibility Score</h3>
+                <div class="value">${summary.score}%</div>
+            </div>
+            <div class="summary-item">
+                <h3>Total Items</h3>
+                <div class="value">${summary.total}</div>
+            </div>
+            <div class="summary-item error">
+                <h3>Errors</h3>
+                <div class="value">${summary.errors}</div>
+            </div>
+            <div class="summary-item warning">
+                <h3>Warnings</h3>
+                <div class="value">${summary.warnings}</div>
+            </div>
+            <div class="summary-item success">
+                <h3>Passed</h3>
+                <div class="value">${summary.passed}</div>
+            </div>
+        </div>
+    </div>
+    
+    <h2>Detailed Results</h2>
+    ${results.map((result, index) => `
+        <div class="result-item ${result.type}">
+            <h3 class="result-title">${this.escapeHtml(result.title)}</h3>
+            <p class="result-description">${this.escapeHtml(result.description)}</p>
+            ${result.suggestion ? `
+                <div class="result-suggestion">
+                    <strong>How to fix:</strong> ${this.escapeHtml(result.suggestion)}
+                </div>
+            ` : ''}
+            ${result.element && result.element.selector ? `
+                <p><strong>Element:</strong> <code>${this.escapeHtml(result.element.selector)}</code></p>
+            ` : ''}
+            ${result.wcagInfo ? `
+                <span class="wcag-ref">WCAG ${result.criterion} - ${result.wcagInfo.level} (${result.wcagInfo.version})</span>
+            ` : ''}
+        </div>
+    `).join('')}
+    
+    <div style="margin-top: 40px; text-align: center; color: #666; border-top: 1px solid #ddd; padding-top: 20px;">
+        Report generated by WCAG Compliance Checker
+    </div>
+</body>
+</html>`;
+    }
+
+    generateCSVReport() {
+        const results = this.currentResults.results;
+        let csv = 'Type,Title,Description,Suggestion,WCAG Criterion,Level,Element\n';
+        
+        results.forEach(result => {
+            const row = [
+                result.type,
+                `"${result.title.replace(/"/g, '""')}"`,
+                `"${result.description.replace(/"/g, '""')}"`,
+                `"${(result.suggestion || '').replace(/"/g, '""')}"`,
+                result.criterion || '',
+                result.wcagInfo ? result.wcagInfo.level : '',
+                result.element ? `"${result.element.selector.replace(/"/g, '""')}"` : ''
+            ];
+            csv += row.join(',') + '\n';
+        });
+        
+        return csv;
+    }
+
+            printResults() {
+                if (!this.currentResults) {
+                    this.announceToUser('No results to print');
+                    return;
+                }
+
+                // Switch to results tab first
+                const resultsTab = document.getElementById('results-tab');
+                this.switchTab(resultsTab, 'results-panel');
+
+                setTimeout(() => {
+                    window.print();
+                }, 100);
+            }
+
+            handleKeyboardNavigation(e) {
+                // Handle keyboard shortcuts
+                if (e.ctrlKey || e.metaKey) {
+                    switch (e.key) {
+                        case '1':
+                            e.preventDefault();
+                            document.getElementById('check-tab').click();
+                            break;
+                        case '2':
+                            e.preventDefault();
+                            document.getElementById('results-tab').click();
+                            break;
+                        case '3':
+                            e.preventDefault();
+                            document.getElementById('criteria-tab').click();
+                            break;
+                        case 'Enter':
+                            if (document.activeElement.closest('#check-form')) {
+                                e.preventDefault();
+                                this.startAccessibilityCheck();
+                            }
+                            break;
+                    }
+                }
+            }
+
+            announceToUser(message) {
+                const announcements = document.getElementById('announcements');
+                announcements.textContent = message;
+
+                // Clear after announcement
+                setTimeout(() => {
+                    announcements.textContent = '';
+                }, 1000);
+            }
+
+            escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // AI Remediation functionality
+        class AIRemediationManager {
+            constructor(app) {
+                this.app = app;
+                this.currentRemediations = null;
+                this.isProcessing = false;
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                // Preview fixes button
+                document.getElementById('preview-fixes').addEventListener('click', () => {
+                    this.previewFixes();
+                });
+
+                // Auto-fix button
+                document.getElementById('auto-fix-issues').addEventListener('click', () => {
+                    this.startAutoFix();
+                });
+
+                // AI tab switching
+                document.querySelectorAll('.ai-tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        this.switchAITab(tab.dataset.tab);
+                    });
+                });
+
+                // Code actions
+                document.getElementById('copy-fixed-code')?.addEventListener('click', () => {
+                    this.copyFixedCode();
+                });
+
+                document.getElementById('download-fixed-code')?.addEventListener('click', () => {
+                    this.downloadFixedCode();
+                });
+
+                document.getElementById('apply-all-fixes')?.addEventListener('click', () => {
+                    this.applyAllFixes();
+                });
+
+                document.getElementById('export-ai-report')?.addEventListener('click', () => {
+                    this.exportAIReport();
+                });
+            }
+
+            async previewFixes() {
+                if (!this.app.currentResults || !this.app.currentResults.results) {
+                    this.app.showError('No issues found. Run an accessibility check first.');
+                    return;
+                }
+
+                const issues = this.app.currentResults.results.filter(r =>
+                    r.type === 'error' || r.type === 'warning'
+                );
+
+                if (issues.length === 0) {
+                    this.app.announceToUser('No issues found that can be auto-fixed.');
+                    return;
+                }
+
+                const sourceHtml = await this.getCurrentSourceHtml();
+
+                try {
+                    const response = await fetch('/api/remediate/preview', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            issues: issues.slice(0, 3), // Preview first 3 issues
+                            sourceHtml: sourceHtml,
+                            sampleSize: 3
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        this.displayPreview(data.data);
+                    } else {
+                        throw new Error(data.message || 'Preview failed');
+                    }
+
+                } catch (error) {
+                    this.app.showError(`Preview failed: ${error.message}`);
+                }
+            }
+
+            displayPreview(previewData) {
+                // Create modal for preview
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+            <div class="modal ai-preview-modal">
+                <div class="modal-header">
+                    <h3>🔍 AI Fix Preview</h3>
+                    <button class="modal-close" aria-label="Close preview">&times;</button>
+                </div>
+                <div class="modal-content">
+                    <p>Preview of ${previewData.sampleSize} sample fixes (${previewData.totalIssues} total issues):</p>
+                    <div class="preview-list">
+                        ${previewData.preview.map(fix => `
+                            <div class="preview-item">
+                                <div class="preview-header">
+                                    <strong>${fix.issueType}</strong>
+                                    <span class="confidence-badge">Confidence: ${Math.round(fix.confidence * 100)}%</span>
+                                </div>
+                                <div class="preview-explanation">${fix.explanation}</div>
+                                <div class="preview-code">
+                                    <div class="before-code">
+                                        <label>Before:</label>
+                                        <code>${this.app.escapeHtml(fix.beforeCode)}</code>
+                                    </div>
+                                    <div class="after-code">
+                                        <label>After:</label>
+                                        <code>${this.app.escapeHtml(fix.afterCode)}</code>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="preview-actions">
+                        <button class="btn-secondary modal-close">Cancel</button>
+                        <button class="btn-primary" onclick="app.aiManager.startAutoFix(); this.closest('.modal-overlay').remove();">
+                            Proceed with Auto-Fix
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+                document.body.appendChild(modal);
+
+                // Close modal functionality
+                modal.querySelectorAll('.modal-close').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.body.removeChild(modal);
+                    });
+                });
+
+                // Close on overlay click
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        document.body.removeChild(modal);
+                    }
+                });
+            }
+
+            async startAutoFix() {
+                if (this.isProcessing) {
+                    this.app.announceToUser('AI remediation is already in progress.');
+                    return;
+                }
+
+                if (!this.app.currentResults || !this.app.currentResults.results) {
+                    this.app.showError('No issues found. Run an accessibility check first.');
+                    return;
+                }
+
+                let issues = this.app.currentResults.results.filter(r =>
+                    r.type === 'error' || r.type === 'warning'
+                );
+
+                issues = issues.slice(0, 10); // Limit to first 10 issues for performance
+
+                if (issues.length === 0) {
+                    this.app.announceToUser('No issues found that can be auto-fixed.');
+                    return;
+                }
+
+                this.isProcessing = true;
+                this.showAIProgress();
+
+                const sourceHtml = await this.getCurrentSourceHtml();
+
+                try {
+                    const response = await fetch('/api/remediate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            issues: issues,
+                            sourceHtml: sourceHtml,
+                            applyChanges: false // We'll apply manually for better control
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        this.currentRemediations = data.data;
+                        this.displayAIResults(data.data);
+                        this.app.announceToUser(`🎉 AI successfully processed ${data.data.remediations.length} fixes!`);
+                    } else {
+                        throw new Error(data.message || 'AI remediation failed');
+                    }
+
+                } catch (error) {
+                    this.app.showError(`AI remediation failed: ${error.message}`);
+                } finally {
+                    this.isProcessing = false;
+                    this.hideAIProgress();
+                }
+            }
+
+            async getCurrentSourceHtml() {
+                // Get the current source HTML from the active method
+                const activeMethod = document.querySelector('.method-tab.active').dataset.method;
+
+                if (activeMethod === 'url') {
+                    return this.app.currentResults?.originalHtml;
+                } else if (activeMethod === 'html') {
+                    return document.getElementById('html-content').value;
+                } else {
+                    // Live analysis - return current page HTML
+                    return document.documentElement.outerHTML;
+                }
+            }
+
+            showAIProgress() {
+                // Show AI remediation section
+                const aiSection = document.getElementById('ai-remediation-section');
+                if (aiSection.style.display === 'none') {
+                    aiSection.style.display = 'block';
+                }
+
+                // Show progress
+                const progressSection = document.getElementById('ai-progress-section');
+                progressSection.classList.remove('hidden');
+
+                this.updateAIProgress(0, 'Starting AI agents...');
+
+                // Simulate agent status
+                this.updateAgentStatus([
+                    { id: 'agent-1', status: 'pending', task: 'Analyzing structure issues' },
+                    { id: 'agent-2', status: 'pending', task: 'Processing image issues' },
+                    { id: 'agent-3', status: 'pending', task: 'Fixing form labels' }
+                ]);
+            }
+
+            hideAIProgress() {
+                const progressSection = document.getElementById('ai-progress-section');
+                progressSection.classList.add('hidden');
+            }
+
+            updateAIProgress(percentage, message) {
+                const progressBar = document.querySelector('#ai-progress-section .progress-fill');
+                const progressText = document.getElementById('ai-progress-text');
+
+                progressBar.style.width = `${percentage}%`;
+                progressText.textContent = message;
+
+                // Update aria attributes
+                const progressElement = document.querySelector('#ai-progress-section .progress-bar');
+                progressElement.setAttribute('aria-valuenow', percentage);
+            }
+
+            updateAgentStatus(agents) {
+                const agentsContainer = document.getElementById('ai-agents-status');
+                agentsContainer.innerHTML = '';
+
+                agents.forEach(agent => {
+                    const agentDiv = document.createElement('div');
+                    agentDiv.className = `agent-indicator ${agent.status}`;
+                    agentDiv.innerHTML = `
+                <div class="status-indicator ${agent.status}"></div>
+                <div class="agent-name">${agent.id}</div>
+                <div class="agent-task">${agent.task}</div>
+            `;
+                    agentsContainer.appendChild(agentDiv);
+                });
+            }
+
+            displayAIResults(data) {
+                // Show AI results section
+                const resultsSection = document.getElementById('ai-results-section');
+                resultsSection.classList.remove('hidden');
+
+                // Show AI remediation section if hidden
+                const aiSection = document.getElementById('ai-remediation-section');
+                if (aiSection.style.display === 'none') {
+                    aiSection.style.display = 'block';
+                }
+
+                // Update summary
+                this.updateAISummary(data.summary);
+
+                // Populate fixes tab
+                this.populateFixesTab(data.remediations);
+
+                // Populate conflicts tab
+                this.populateConflictsTab(data.conflicts || []);
+
+                // Populate preview tab
+                this.populatePreviewTab(data);
+
+                // Populate code tab
+                this.populateCodeTab(data);
+            }
+
+            updateAISummary(summary) {
+                const summaryContainer = document.getElementById('ai-summary');
+                summaryContainer.innerHTML = `
+            <div class="ai-summary-item success">
+                <span class="value">${summary.successful}</span>
+                <span class="label">Fixed</span>
+            </div>
+            <div class="ai-summary-item warning">
+                <span class="value">${summary.failed}</span>
+                <span class="label">Failed</span>
+            </div>
+            <div class="ai-summary-item">
+                <span class="value">${Math.round(summary.averageConfidence * 100)}%</span>
+                <span class="label">Avg Confidence</span>
+            </div>
+            <div class="ai-summary-item">
+                <span class="value">${Math.round(summary.totalProcessingTime / 1000)}s</span>
+                <span class="label">Processing Time</span>
+            </div>
+        `;
+            }
+
+            populateFixesTab(remediations) {
+                const fixesList = document.getElementById('ai-fixes-list');
+                const successfulFixes = remediations.filter(r => r.status === 'success');
+
+                if (successfulFixes.length === 0) {
+                    fixesList.innerHTML = '<div class="empty-state"><p>No successful fixes to display.</p></div>';
+                    return;
+                }
+
+                fixesList.innerHTML = successfulFixes.map(fix => `
+            <div class="ai-fix-item">
+                <div class="ai-fix-header">
+                    <div class="ai-fix-icon">✅</div>
+                    <h4 class="ai-fix-title">${this.app.escapeHtml(fix.type)} - Line ${fix.lineNumber}</h4>
+                    <div class="ai-fix-confidence">${Math.round(fix.confidence * 100)}%</div>
+                </div>
+                <div class="ai-fix-details">
+                    <div class="ai-fix-explanation">${this.app.escapeHtml(fix.explanation)}</div>
+                    <div class="ai-fix-code ai-fix-before">
+                        <strong>Before:</strong>
+                        <pre><code>${this.app.escapeHtml(fix.beforeCode)}</code></pre>
+                    </div>
+                    <div class="ai-fix-code ai-fix-after">
+                        <strong>After:</strong>
+                        <pre><code>${this.app.escapeHtml(fix.afterCode)}</code></pre>
+                    </div>
+                    ${fix.wcagCriterion ? `<div class="wcag-ref">WCAG ${fix.wcagCriterion}</div>` : ''}
+                </div>
+            </div>
+        `).join('');
+            }
+
+            populateConflictsTab(conflicts) {
+                const conflictsList = document.getElementById('ai-conflicts-list');
+
+                if (conflicts.length === 0) {
+                    conflictsList.innerHTML = '<div class="empty-state"><p>🎉 No conflicts detected! All fixes can be applied safely.</p></div>';
+                    return;
+                }
+
+                conflictsList.innerHTML = conflicts.map((conflict, index) => `
+            <div class="conflict-item">
+                <div class="conflict-header">
+                    <div class="conflict-icon">⚠️</div>
+                    <h4>Line ${conflict.lineNumber} Conflict</h4>
+                </div>
+                <p>Multiple fixes attempt to modify the same line:</p>
+                <div class="conflict-options">
+                    ${conflict.remediations.map((option, optIndex) => `
+                        <div class="conflict-option" onclick="this.classList.toggle('selected')">
+                            <strong>${option.type}</strong> (${Math.round(option.confidence * 100)}% confidence)
+                            <br>
+                            <code>${this.app.escapeHtml(option.afterCode)}</code>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+            }
+
+            populatePreviewTab(data) {
+                const beforeCode = document.getElementById('before-code');
+                const afterCode = document.getElementById('after-code');
+
+                // For preview, show a representative sample
+                const sampleFix = data.remediations.find(r => r.status === 'success');
+
+                if (sampleFix) {
+                    beforeCode.textContent = sampleFix.beforeCode;
+                    afterCode.textContent = sampleFix.afterCode;
+                } else {
+                    beforeCode.textContent = 'No fixes to preview';
+                    afterCode.textContent = 'No changes made';
+                }
+            }
+
+            populateCodeTab(data) {
+                const codeContainer = document.getElementById('fixed-html-code');
+
+                if (data.modifiedHtml) {
+                    codeContainer.textContent = data.modifiedHtml;
+                } else {
+                    codeContainer.textContent = '// Modified HTML will appear here after applying fixes';
+                }
+            }
+
+            switchAITab(tabName) {
+                // Update tab buttons
+                document.querySelectorAll('.ai-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+                // Update tab panels
+                document.querySelectorAll('.ai-tab-panel').forEach(panel => {
+                    panel.classList.remove('active');
+                });
+                document.getElementById(`ai-${tabName}-tab`).classList.add('active');
+            }
+
+            async copyFixedCode() {
+                const code = document.getElementById('fixed-html-code').textContent;
+
+                try {
+                    await navigator.clipboard.writeText(code);
+                    this.app.announceToUser('Fixed code copied to clipboard!');
+                } catch (error) {
+                    this.app.showError('Failed to copy code to clipboard');
+                }
+            }
+
+            downloadFixedCode() {
+                const code = document.getElementById('fixed-html-code').textContent;
+                const blob = new Blob([code], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `fixed-accessibility-${new Date().toISOString().split('T')[0]}.html`;
+                a.click();
+
+                URL.revokeObjectURL(url);
+                this.app.announceToUser('Fixed HTML downloaded!');
+            }
+
+            async applyAllFixes() {
+                if (!this.currentRemediations) {
+                    this.app.showError('No fixes to apply');
+                    return;
+                }
+
+                const sourceHtml = await this.getCurrentSourceHtml();
+                const successfulFixes = this.currentRemediations.remediations.filter(r => r.status === 'success');
+
+                try {
+                    const response = await fetch('/api/remediate/apply', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            sourceHtml: sourceHtml,
+                            remediations: successfulFixes,
+                            validateResult: true
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Update the code display
+                        document.getElementById('fixed-html-code').textContent = data.data.modifiedHtml;
+
+                        // Show success message
+                        this.app.announceToUser(`🎉 Applied ${data.data.appliedCount} fixes successfully!`);
+
+                        // If there were errors, show them
+                        if (data.data.errors.length > 0) {
+                            console.warn('Application errors:', data.data.errors);
+                        }
+                    } else {
+                        throw new Error(data.message || 'Failed to apply fixes');
+                    }
+
+                } catch (error) {
+                    this.app.showError(`Failed to apply fixes: ${error.message}`);
+                }
+            }
+
+            async exportAIReport() {
+                if (!this.currentRemediations) {
+                    this.app.showError('No AI results to export');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/export', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            results: this.currentRemediations,
+                            format: 'html',
+                            includeDetails: true
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Export failed');
+                    }
+
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `ai-remediation-report-${new Date().toISOString().split('T')[0]}.html`;
+                    a.click();
+
+                    URL.revokeObjectURL(url);
+                    this.app.announceToUser('AI remediation report exported!');
+
+                } catch (error) {
+                    this.app.showError('Failed to export AI report');
+                }
+            }
+
+            showAIRemediationSection() {
+                const aiSection = document.getElementById('ai-remediation-section');
+                aiSection.style.display = 'block';
+                aiSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        // Initialize the application
+        let app;
+        document.addEventListener('DOMContentLoaded', () => {
+            app = new WCAGComplianceApp();
+            app.aiManager = new AIRemediationManager(app);
+
+            // Make app globally available for onclick handlers
+            window.app = app;
+        });
+        
+    </script>
+</body>
+
+</html>

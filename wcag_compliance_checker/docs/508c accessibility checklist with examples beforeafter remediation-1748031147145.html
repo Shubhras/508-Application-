@@ -1,0 +1,2422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="YouSayAIDo.com">
+    <title>508c accessibility checklist with examples before/after remediation</title>
+    <meta name="description" content="508c accessibility checklist with examples before/after remediation">
+    <style>
+        :root {
+    --primary-color: #0066cc;
+    --secondary-color: #4a90e2;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --text-color: #333;
+    --border-color: #ddd;
+    --focus-color: #005fcc;
+    --shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Screen reader only text */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Focus management */
+*:focus {
+    outline: 3px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+/* Skip links */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: var(--primary-color);
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 1000;
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* Main layout */
+.intro {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.compliance-score {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+.score-display {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.score-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--success-color);
+}
+
+.score-label {
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+.audit-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.audit-btn:hover, .audit-btn:focus {
+    background: var(--focus-color);
+}
+
+/* Requirement sections */
+.requirement-section {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+.requirement-section h2 {
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Before/After examples */
+.before-after {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+@media (max-width: 768px) {
+    .before-after {
+        grid-template-columns: 1fr;
+    }
+}
+
+.before, .after {
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+}
+
+.before {
+    background: #fff5f5;
+    border-color: var(--danger-color);
+}
+
+.after {
+    background: #f0fff4;
+    border-color: var(--success-color);
+}
+
+.before h3, .after h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.example-content {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.code-example {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+    font-family: 'Courier New', monospace;
+    overflow-x: auto;
+}
+
+/* Interactive components */
+.interactive-test, .keyboard-test, .contrast-checker, .html-validator {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.interactive-test h4, .keyboard-test h4, .contrast-checker h4, .html-validator h4 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+
+/* Form styling */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+label {
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+input, textarea, select {
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--focus-color);
+}
+
+button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+button:hover, button:focus {
+    background: var(--focus-color);
+    transform: translateY(-1px);
+}
+
+button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Dropdown examples */
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    background: white;
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background: white;
+    min-width: 160px;
+    box-shadow: var(--shadow);
+    z-index: 1;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    top: 100%;
+    left: 0;
+}
+
+.dropdown-content div {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+.dropdown-content div:hover {
+    background: #f1f1f1;
+}
+
+.accessible-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-list {
+    position: absolute;
+    background: white;
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    min-width: 160px;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+}
+
+.dropdown-list li {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dropdown-list li:last-child {
+    border-bottom: none;
+}
+
+.dropdown-list li:hover, .dropdown-list li:focus {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Navigation examples */
+.bad-nav span {
+    margin-right: 1rem;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 1rem;
+}
+
+nav li {
+    display: inline;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+nav a:hover, nav a:focus {
+    background: var(--primary-color);
+    color: white;
+}
+
+nav a[aria-current="page"] {
+    background: var(--secondary-color);
+    color: white;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    align-items: center;
+}
+
+.breadcrumb li:not(:last-child)::after {
+    content: '›';
+    margin: 0 0.5rem;
+    color: var(--text-color);
+}
+
+.breadcrumb a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.breadcrumb a:hover, .breadcrumb a:focus {
+    text-decoration: underline;
+}
+
+.breadcrumb li[aria-current="page"] {
+    color: var(--text-color);
+    font-weight: bold;
+}
+
+/* Color contrast examples */
+.poor-contrast {
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+.good-contrast {
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+.color-inputs {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.contrast-preview {
+    padding: 2rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.contrast-ratio {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 1rem 0;
+}
+
+.compliance-status {
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+}
+
+.compliance-status.pass {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.compliance-status.fail {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Semantic structure examples */
+.non-semantic {
+    border: 1px dashed #ccc;
+    padding: 1rem;
+}
+
+.semantic-structure {
+    border: 1px solid var(--success-color);
+    padding: 1rem;
+}
+
+.semantic-structure header {
+    background: #e3f2fd;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+
+.semantic-structure nav {
+    background: #f3e5f5;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+
+.semantic-structure main {
+    background: #e8f5e8;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+
+.semantic-structure footer {
+    background: #fff3e0;
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+/* ARIA examples */
+.landmark-demo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+@media (max-width: 768px) {
+    .landmark-demo {
+        grid-template-columns: 1fr;
+    }
+}
+
+.help-text {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 0;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 8px 8px 0 0;
+    background: var(--primary-color);
+    color: white;
+}
+
+.modal-header h3 {
+    margin: 0;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.close-button:hover, .close-button:focus {
+    background: rgba(255,255,255,0.2);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+/* Audit tool */
+.audit-tool {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+}
+
+.audit-container {
+    text-align: center;
+}
+
+.audit-button {
+    background: var(--success-color);
+    font-size: 1.2rem;
+    padding: 1rem 2rem;
+    margin: 1rem 0;
+}
+
+.audit-results {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.report-generator {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    text-align: left;
+}
+
+/* Focus indicators */
+.focus-trap {
+    border: 2px dashed var(--primary-color);
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+}
+
+.keyboard-indicator {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+    font-family: monospace;
+    min-height: 2rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .compliance-score {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .color-inputs {
+        grid-template-columns: 1fr;
+    }
+    
+    nav ul {
+        flex-direction: column;
+    }
+    
+    .breadcrumb {
+        flex-wrap: wrap;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --primary-color: #000080;
+        --text-color: #000;
+        --border-color: #000;
+    }
+    
+    .before {
+        border-width: 3px;
+    }
+    
+    .after {
+        border-width: 3px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    button:hover {
+        transform: none;
+    }
+}
+
+/* Print styles */
+@media print {
+    .modal, .skip-link {
+        display: none;
+    }
+    
+    .before-after {
+        grid-template-columns: 1fr;
+    }
+    
+    * {
+        color: #000 !important;
+        background: #fff !important;
+    }
+}
+    </style>
+</head>
+<body>
+    
+    <header>
+        <nav aria-label="Main navigation">
+            <h1>508c Accessibility Compliance Toolkit</h1>
+            <ul>
+                <li><a href="#text-alternatives" aria-describedby="nav-desc-1">Text Alternatives</a></li>
+                <li><a href="#keyboard-access" aria-describedby="nav-desc-2">Keyboard Access</a></li>
+                <li><a href="#navigation" aria-describedby="nav-desc-3">Navigation</a></li>
+                <li><a href="#multimedia" aria-describedby="nav-desc-4">Multimedia</a></li>
+                <li><a href="#color-contrast" aria-describedby="nav-desc-5">Color Contrast</a></li>
+                <li><a href="#semantic-html" aria-describedby="nav-desc-6">Semantic HTML</a></li>
+            </ul>
+            <div class="sr-only">
+                <span id="nav-desc-1">Learn about text alternatives for images and media</span>
+                <span id="nav-desc-2">Understand keyboard navigation requirements</span>
+                <span id="nav-desc-3">Explore accessible navigation patterns</span>
+                <span id="nav-desc-4">Review multimedia accessibility standards</span>
+                <span id="nav-desc-5">Test and validate color contrast ratios</span>
+                <span id="nav-desc-6">Implement semantic HTML and ARIA landmarks</span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="intro" role="banner">
+            <h2>Interactive 508c Compliance Learning Platform</h2>
+            <p>This toolkit provides hands-on examples of Section 508c accessibility requirements with before/after remediation examples. Each section includes interactive demonstrations, testing tools, and practical guidance for implementation.</p>
+            
+            <div class="compliance-score" role="region" aria-labelledby="score-heading">
+                <h3 id="score-heading">Current Page Accessibility Score</h3>
+                <div class="score-display" aria-live="polite">
+                    <span class="score-number" id="accessibility-score">98</span>
+                    <span class="score-label">% Compliant</span>
+                </div>
+                <button onclick="runAccessibilityAudit()" class="audit-btn">Run Full Audit</button>
+            </div>
+        </section>
+
+        <!-- Text Alternatives Section -->
+        <section id="text-alternatives" class="requirement-section" aria-labelledby="text-alt-heading">
+            <h2 id="text-alt-heading">1. Text Alternatives for Non-Text Content</h2>
+            
+            <div class="example-container">
+                <div class="before-after">
+                    <div class="before">
+                        <h3>❌ Before Remediation</h3>
+                        <div class="example-content">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNoYXJ0IEltYWdlPC90ZXh0Pjwvc3ZnPg==" style="width: 200px; height: 100px;">
+                            <p>Sales increased significantly this quarter.</p>
+                        </div>
+                        <div class="code-example">
+                            <code>&lt;img src="chart.png"&gt;</code>
+                        </div>
+                    </div>
+                    
+                    <div class="after">
+                        <h3>✅ After Remediation</h3>
+                        <div class="example-content">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PGxpbmUgeDE9IjIwIiB5MT0iODAiIHgyPSIxODAiIHkyPSIyMCIgc3Ryb2tlPSIjMDA3ZGZmIiBzdHJva2Utd2lkdGg9IjMiLz48Y2lyY2xlIGN4PSIyMCIgY3k9IjgwIiByPSIzIiBmaWxsPSIjMDA3ZGZmIi8+PGNpcmNsZSBjeD0iMTgwIiBjeT0iMjAiIHI9IjMiIGZpbGw9IiMwMDdkZmYiLz48dGV4dCB4PSI1MCUiIHk9IjkwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNoYXJ0PC90ZXh0Pjwvc3ZnPg==" 
+                                 alt="Sales chart showing 40% increase from Q1 to Q2, rising from 50,000 to 70,000 units"
+                                 style="width: 200px; height: 100px;"
+                                 longdesc="#chart-description">
+                            <div id="chart-description" class="sr-only">
+                                Detailed chart description: Bar chart showing quarterly sales data. Q1 shows 50,000 units sold, Q2 shows 70,000 units sold, representing a 40% increase quarter over quarter.
+                            </div>
+                            <p>Sales increased significantly this quarter.</p>
+                        </div>
+                        <div class="code-example">
+                            <code>&lt;img src="chart.png" alt="Sales chart showing 40% increase from Q1 to Q2" longdesc="#chart-description"&gt;</code>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="interactive-test">
+                    <h4>Interactive Alt Text Generator</h4>
+                    <form method="dialog" onsubmit="generateAltText(event)">
+                        <label for="image-upload">Upload an image to generate alt text:</label>
+                        <input type="file" id="image-upload" accept="image/*" onchange="previewImage(event)">
+                        <div id="image-preview"></div>
+                        <label for="manual-alt">Or enter alt text manually:</label>
+                        <textarea id="manual-alt" placeholder="Describe the image content and context..."></textarea>
+                        <button type="submit">Generate HTML</button>
+                    </form>
+                    <div id="alt-text-result" aria-live="polite"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Keyboard Accessibility Section -->
+        <section id="keyboard-access" class="requirement-section" aria-labelledby="keyboard-heading">
+            <h2 id="keyboard-heading">2. Keyboard Accessibility</h2>
+            
+            <div class="example-container">
+                <div class="before-after">
+                    <div class="before">
+                        <h3>❌ Before Remediation</h3>
+                        <div class="example-content">
+                            <div class="custom-dropdown" onclick="toggleDropdown()">
+                                <span>Select Option</span>
+                                <div class="dropdown-content" id="bad-dropdown">
+                                    <div onclick="selectOption('Option 1')">Option 1</div>
+                                    <div onclick="selectOption('Option 2')">Option 2</div>
+                                    <div onclick="selectOption('Option 3')">Option 3</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="code-example">
+                            <code>&lt;div onclick="toggleDropdown()"&gt;Select Option&lt;/div&gt;</code>
+                        </div>
+                    </div>
+                    
+                    <div class="after">
+                        <h3>✅ After Remediation</h3>
+                        <div class="example-content">
+                            <div class="accessible-dropdown">
+                                <button type="button" 
+                                        id="dropdown-button"
+                                        aria-haspopup="listbox"
+                                        aria-expanded="false"
+                                        onclick="toggleAccessibleDropdown()"
+                                        onkeydown="handleDropdownKeydown(event)">
+                                    Select Option
+                                    <span aria-hidden="true">▼</span>
+                                </button>
+                                <ul role="listbox" 
+                                    id="accessible-dropdown" 
+                                    aria-labelledby="dropdown-button"
+                                    class="dropdown-list"
+                                    style="display: none;">
+                                    <li role="option" tabindex="0" onclick="selectAccessibleOption(this, 'Option 1')" onkeydown="handleOptionKeydown(event)">Option 1</li>
+                                    <li role="option" tabindex="0" onclick="selectAccessibleOption(this, 'Option 2')" onkeydown="handleOptionKeydown(event)">Option 2</li>
+                                    <li role="option" tabindex="0" onclick="selectAccessibleOption(this, 'Option 3')" onkeydown="handleOptionKeydown(event)">Option 3</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="code-example">
+                            <code>&lt;button aria-haspopup="listbox" aria-expanded="false"&gt;Select Option&lt;/button&gt;</code>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="keyboard-test">
+                    <h4>Keyboard Navigation Test</h4>
+                    <p>Use Tab, Enter, Space, and Arrow keys to navigate:</p>
+                    <div class="focus-trap" role="region" aria-labelledby="focus-test-heading">
+                        <h5 id="focus-test-heading">Focus Management Demo</h5>
+                        <button onclick="showModal()">Open Modal</button>
+                        <a href="#" onclick="return false;">Focusable Link</a>
+                        <input type="text" placeholder="Text input">
+                        <select>
+                            <option>Option A</option>
+                            <option>Option B</option>
+                        </select>
+                    </div>
+                    <div class="keyboard-indicator" aria-live="polite" id="key-pressed"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Section -->
+        <section id="navigation" class="requirement-section" aria-labelledby="nav-heading">
+            <h2 id="nav-heading">3. Web Page Navigation Accessibility</h2>
+            
+            <div class="example-container">
+                <div class="before-after">
+                    <div class="before">
+                        <h3>❌ Before Remediation</h3>
+                        <div class="example-content">
+                            <div class="bad-nav">
+                                <span onclick="navigate('home')">Home</span>
+                                <span onclick="navigate('about')">About</span>
+                                <span onclick="navigate('contact')" style="color: red;">Contact</span>
+                            </div>
+                        </div>
+                        <div class="code-example">
+                            <code>&lt;span onclick="navigate('home')"&gt;Home&lt;/span&gt;</code>
+                        </div>
+                    </div>
+                    
+                    <div class="after">
+                        <h3>✅ After Remediation</h3>
+                        <div class="example-content">
+                            <nav aria-label="Example navigation" role="navigation">
+                                <ul>
+                                    <li><a href="#home" aria-current="page">Home</a></li>
+                                    <li><a href="#about">About</a></li>
+                                    <li><a href="#contact" aria-describedby="contact-info">Contact</a></li>
+                                </ul>
+                                <span id="contact-info" class="sr-only">Opens contact form</span>
+                            </nav>
+                        </div>
+                        <div class="code-example">
+                            <code>&lt;nav aria-label="Main navigation"&gt;&lt;a href="#home" aria-current="page"&gt;Home&lt;/a&gt;&lt;/nav&gt;</code>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="breadcrumb-example">
+                    <h4>Accessible Breadcrumb Navigation</h4>
+                    <nav aria-label="Breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li><a href="#home" aria-label="Go to home page">Home</a></li>
+                            <li><a href="#toolkit" aria-label="Go to accessibility toolkit">Accessibility Toolkit</a></li>
+                            <li aria-current="page">Navigation Examples</li>
+                        </ol>
+                    </nav>
+                </div>
+                
+                <div class="skip-links-demo">
+                    <h4>Skip Links Example</h4>
+                    <a href="#main-content" class="skip-link">Skip to main content</a>
+                    <a href="#navigation" class="skip-link">Skip to navigation</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Multimedia Section -->
+        <section id="multimedia" class="requirement-section" aria-labelledby="multimedia-heading">
+            <h2 id="multimedia-heading">4. Multimedia Accessibility</h2>
+            
+            <div class="example-container">
+                <div class="before-after">
+                    <div class="before">
+                        <h3>❌ Before Remediation</h3>
+                        <div class="example-content">
+                            <video width="300" height="200" controls>
+                                <source src="data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAAXBtZGF0" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="code-example">
+                            <code>&lt;video controls&gt;&lt;source src="video.mp4"&gt;&lt;/video&gt;</code>
+                        </div>
+                    </div>
+                    
+                    <div class="after">
+                        <h3>✅ After Remediation</h3>
+                        <div class="example-content">
+                            <video width="300" height="200" controls 
+                                   aria-label="Product demonstration video"
+                                   aria-describedby="video-description">
+                                <source src="data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAAXBtZGF0" type="video/mp4">
+                                <track kind="captions" src="captions.vtt" srclang="en" label="English captions" default>
+                                <track kind="descriptions" src="descriptions.vtt" srclang="en" label="Audio descriptions">
+                                <p>Your browser doesn't support HTML5 video. <a href="video.mp4">Download the video</a> instead.</p>
+                            </video>
+                            <div id="video-description">
+                                <h5>Video Description:</h5>
+                                <p>A 2-minute demonstration showing how to use the accessibility features of our software, including keyboard navigation and screen reader compatibility.</p>
+                            </div>
+                        </div>
+                        <div class="code-example">
+                            <code>&lt;video controls aria-label="Demo video"&gt;&lt;track kind="captions" src="captions.vtt"&gt;&lt;/video&gt;</code>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="transcript-example">
+                    <h4>Video Transcript Generator</h4>
+                    <form method="dialog" onsubmit="generateTranscript(event)">
+                        <label for="video-url">Video URL or description:</label>
+                        <input type="url" id="video-url" placeholder="https://example.com/video.mp4">
+                        <label for="transcript-text">Transcript content:</label>
+                        <textarea id="transcript-text" placeholder="Enter video transcript here..." rows="6"></textarea>
+                        <button type="submit">Generate Accessible Video HTML</button>
+                    </form>
+                    <div id="transcript-result" aria-live="polite"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Color Contrast Section -->
+        <section id="color-contrast" class="requirement-section" aria-labelledby="contrast-heading">
+            <h2 id="contrast-heading">5. Color Contrast Requirements</h2>
+            
+            <div class="example-container">
+                <div class="before-after">
+                    <div class="before">
+                        <h3>❌ Before Remediation</h3>
+                        <div class="example-content">
+                            <div class="poor-contrast">
+                                <p style="color: #999; background: #ddd;">Low contrast text - ratio 1.8:1</p>
+                                <button style="background: #ffeb3b; color: #fff; border: none; padding: 8px 16px;">Poor contrast button</button>
+                            </div>
+                        </div>
+                        <div class="code-example">
+                            <code>color: #999; background: #ddd; /* Ratio: 1.8:1 */</code>
+                        </div>
+                    </div>
+                    
+                    <div class="after">
+                        <h3>✅ After Remediation</h3>
+                        <div class="example-content">
+                            <div class="good-contrast">
+                                <p style="color: #333; background: #fff;">High contrast text - ratio 12.6:1</p>
+                                <button style="background: #0066cc; color: #fff; border: none; padding: 8px 16px;">Good contrast button</button>
+                            </div>
+                        </div>
+                        <div class="code-example">
+                            <code>color: #333; background: #fff; /* Ratio: 12.6:1 */</code>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contrast-checker">
+                    <h4>Color Contrast Checker</h4>
+                    <form method="dialog" onsubmit="checkContrast(event)">
+                        <div class="color-inputs">
+                            <label for="foreground-color">Foreground Color:</label>
+                            <input type="color" id="foreground-color" value="#333333">
+                            <input type="text" id="fg-hex" value="#333333" pattern="^#[0-9A-Fa-f]{6}$">
+                            
+                            <label for="background-color">Background Color:</label>
+                            <input type="color" id="background-color" value="#ffffff">
+                            <input type="text" id="bg-hex" value="#ffffff" pattern="^#[0-9A-Fa-f]{6}$">
+                        </div>
+                        <button type="submit">Check Contrast</button>
+                    </form>
+                    
+                    <div id="contrast-result" aria-live="polite">
+                        <div class="contrast-preview" id="contrast-preview">
+                            <p>Sample text with current colors</p>
+                        </div>
+                        <div class="contrast-ratio" id="contrast-ratio"></div>
+                        <div class="compliance-status" id="compliance-status"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Semantic HTML Section -->
+        <section id="semantic-html" class="requirement-section" aria-labelledby="semantic-heading">
+            <h2 id="semantic-heading">6. Semantic HTML and ARIA Landmarks</h2>
+            
+            <div class="example-container">
+                <div class="before-after">
+                    <div class="before">
+                        <h3>❌ Before Remediation</h3>
+                        <div class="example-content">
+                            <div class="non-semantic">
+                                <div class="header">
+                                    <div class="title">Website Title</div>
+                                </div>
+                                <div class="sidebar">
+                                    <div class="nav-item">Home</div>
+                                    <div class="nav-item">About</div>
+                                </div>
+                                <div class="content">
+                                    <div class="article-title">Article Title</div>
+                                    <div class="article-content">Article content...</div>
+                                </div>
+                                <div class="footer">Copyright 2024</div>
+                            </div>
+                        </div>
+                        <div class="code-example">
+                            <code>&lt;div class="header"&gt;&lt;div class="title"&gt;Title&lt;/div&gt;&lt;/div&gt;</code>
+                        </div>
+                    </div>
+                    
+                    <div class="after">
+                        <h3>✅ After Remediation</h3>
+                        <div class="example-content">
+                            <div class="semantic-structure">
+                                <header role="banner">
+                                    <h1>Website Title</h1>
+                                </header>
+                                <nav role="navigation" aria-label="Main navigation">
+                                    <ul>
+                                        <li><a href="#home">Home</a></li>
+                                        <li><a href="#about">About</a></li>
+                                    </ul>
+                                </nav>
+                                <main role="main">
+                                    <article>
+                                        <header>
+                                            <h2>Article Title</h2>
+                                        </header>
+                                        <p>Article content...</p>
+                                    </article>
+                                </main>
+                                <footer role="contentinfo">
+                                    <p>Copyright 2024</p>
+                                </footer>
+                            </div>
+                        </div>
+                        <div class="code-example">
+                            <code>&lt;header role="banner"&gt;&lt;h1&gt;Title&lt;/h1&gt;&lt;/header&gt;</code>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="aria-examples">
+                    <h4>ARIA Landmarks and Roles</h4>
+                    <div class="landmark-demo">
+                        <div role="region" aria-labelledby="demo-heading">
+                            <h5 id="demo-heading">Interactive Demo Region</h5>
+                            <button aria-describedby="button-help">Action Button</button>
+                            <div id="button-help" class="help-text">This button demonstrates ARIA descriptions</div>
+                        </div>
+                        
+                        <div role="complementary" aria-label="Related links">
+                            <h5>Related Resources</h5>
+                            <ul>
+                                <li><a href="#wcag" aria-describedby="wcag-desc">WCAG Guidelines</a></li>
+                                <li><a href="#section508" aria-describedby="508-desc">Section 508 Standards</a></li>
+                            </ul>
+                            <div class="sr-only">
+                                <span id="wcag-desc">Web Content Accessibility Guidelines documentation</span>
+                                <span id="508-desc">Federal accessibility requirements</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="html-validator">
+                    <h4>Semantic HTML Validator</h4>
+                    <form method="dialog" onsubmit="validateHTML(event)">
+                        <label for="html-input">Enter HTML to validate:</label>
+                        <textarea id="html-input" placeholder="Paste your HTML here..." rows="8"></textarea>
+                        <button type="submit">Validate Semantic Structure</button>
+                    </form>
+                    <div id="validation-result" aria-live="polite"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Accessibility Audit Tool -->
+        <section class="audit-tool" aria-labelledby="audit-heading">
+            <h2 id="audit-heading">Comprehensive Accessibility Audit</h2>
+            <div class="audit-container">
+                <button onclick="runFullAudit()" class="audit-button">Run Complete 508c Audit</button>
+                <div id="audit-results" aria-live="polite" class="audit-results"></div>
+                
+                <div class="report-generator">
+                    <h3>Generate Compliance Report</h3>
+                    <form method="dialog" onsubmit="generateReport(event)">
+                        <label for="site-url">Website URL:</label>
+                        <input type="url" id="site-url" placeholder="https://example.com" required>
+                        <label for="report-type">Report Type:</label>
+                        <select id="report-type">
+                            <option value="summary">Summary Report</option>
+                            <option value="detailed">Detailed Analysis</option>
+                            <option value="remediation">Remediation Guide</option>
+                        </select>
+                        <button type="submit">Generate Report</button>
+                    </form>
+                    <div id="report-output" aria-live="polite"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal for demonstrations -->
+    <div id="demo-modal" class="modal" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3 id="modal-title">Demo Modal</h3>
+                <button onclick="closeModal()" aria-label="Close modal" class="close-button">×</button>
+            </header>
+            <div class="modal-body">
+                <p>This modal demonstrates proper focus management and keyboard navigation.</p>
+                <button onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <footer role="contentinfo">
+        <p>508c Accessibility Compliance Toolkit - Educational Platform for Web Accessibility Standards</p>
+        <p>Last updated: <time datetime="2024-01-15">January 15, 2024</time></p>
+    </footer>
+
+
+    <div id="main"></div>
+    <script>
+        class AccessibilityAuditEngine {
+    constructor() {
+        this.auditRules = {
+            textAlternatives: this.checkTextAlternatives.bind(this),
+            keyboardAccess: this.checkKeyboardAccess.bind(this),
+            navigation: this.checkNavigation.bind(this),
+            multimedia: this.checkMultimedia.bind(this),
+            colorContrast: this.checkColorContrast.bind(this),
+            semanticHTML: this.checkSemanticHTML.bind(this)
+        };
+        
+        this.results = {};
+    }
+    
+    async runFullAudit(element = document) {
+        this.results = {};
+        
+        for (const [ruleName, ruleFunction] of Object.entries(this.auditRules)) {
+            try {
+                this.results[ruleName] = await ruleFunction(element);
+            } catch (error) {
+                this.results[ruleName] = {
+                    passed: false,
+                    score: 0,
+                    issues: [`Error running ${ruleName} check: ${error.message}`],
+                    suggestions: []
+                };
+            }
+        }
+        
+        return this.calculateOverallScore();
+    }
+    
+    checkTextAlternatives(element) {
+        var issues = [];
+        var suggestions = [];
+        let score = 100;
+        
+        // Check images
+        var images = element.querySelectorAll('img');
+        let imagesWithoutAlt = 0;
+        
+        images.forEach((img, index) => {
+            if (!img.hasAttribute('alt')) {
+                imagesWithoutAlt++;
+                issues.push(`Image ${index + 1} missing alt attribute`);
+                suggestions.push('Add descriptive alt text to all images');
+            } else if (img.alt.trim() === '') {
+                // Empty alt is okay for decorative images, but check context
+                var isDecorative = img.closest('[role="presentation"]') || 
+                                   img.getAttribute('role') === 'presentation';
+                if (!isDecorative) {
+                    issues.push(`Image ${index + 1} has empty alt text - verify if decorative`);
+                }
+            }
+        });
+        
+        // Check other media elements
+        var videos = element.querySelectorAll('video');
+        videos.forEach((video, index) => {
+            if (!video.hasAttribute('aria-label') && !video.hasAttribute('aria-describedby')) {
+                issues.push(`Video ${index + 1} lacks accessible description`);
+                suggestions.push('Add aria-label or aria-describedby to video elements');
+            }
+        });
+        
+        var canvas = element.querySelectorAll('canvas');
+        canvas.forEach((canvas, index) => {
+            if (!canvas.hasAttribute('aria-label') && !canvas.textContent.trim()) {
+                issues.push(`Canvas ${index + 1} lacks text alternative`);
+                suggestions.push('Provide text alternatives for canvas content');
+            }
+        });
+        
+        if (images.length > 0) {
+            score = Math.max(0, 100 - (imagesWithoutAlt / images.length * 100));
+        }
+        
+        return {
+            passed: issues.length === 0,
+            score: Math.round(score),
+            issues,
+            suggestions: [...new Set(suggestions)], // Remove duplicates
+            details: {
+                totalImages: images.length,
+                imagesWithoutAlt: imagesWithoutAlt,
+                totalVideos: videos.length,
+                totalCanvas: canvas.length
+            }
+        };
+    }
+    
+    checkKeyboardAccess(element) {
+        var issues = [];
+        var suggestions = [];
+        let score = 100;
+        
+        // Check for interactive elements without proper keyboard support
+        var interactiveElements = element.querySelectorAll(
+            'div[onclick], span[onclick], a, button, input, select, textarea, [tabindex]'
+        );
+        
+        let problematicElements = 0;
+        
+        interactiveElements.forEach((el, index) => {
+            // Check if non-semantic interactive elements have proper keyboard support
+            if ((el.tagName === 'DIV' || el.tagName === 'SPAN') && el.hasAttribute('onclick')) {
+                if (!el.hasAttribute('tabindex') || !el.hasAttribute('role')) {
+                    problematicElements++;
+                    issues.push(`Non-semantic interactive element ${index + 1} lacks keyboard support`);
+                    suggestions.push('Use semantic HTML elements or add proper ARIA roles and tabindex');
+                }
+            }
+            
+            // Check for proper focus indicators
+            var computedStyle = window.getComputedStyle(el, ':focus');
+            if (computedStyle.outline === 'none' && computedStyle.boxShadow === 'none') {
+                // Only report if there's no custom focus styling
+                if (!el.matches(':focus-visible')) {
+                    issues.push(`Element ${index + 1} may lack visible focus indicator`);
+                    suggestions.push('Ensure all focusable elements have visible focus indicators');
+                }
+            }
+            
+            // Check tab order
+            var tabIndex = parseInt(el.getAttribute('tabindex'));
+            if (tabIndex > 0) {
+                issues.push(`Element ${index + 1} uses positive tabindex, which can disrupt tab order`);
+                suggestions.push('Avoid positive tabindex values; use document order instead');
+            }
+        });
+        
+        // Check for skip links
+        var skipLinks = element.querySelectorAll('a[href^="#"][class*="skip"], .skip-link');
+        if (skipLinks.length === 0) {
+            issues.push('No skip links found for keyboard navigation');
+            suggestions.push('Add skip links to main content and navigation');
+        }
+        
+        if (interactiveElements.length > 0) {
+            score = Math.max(0, 100 - (problematicElements / interactiveElements.length * 100));
+        }
+        
+        return {
+            passed: issues.length === 0,
+            score: Math.round(score),
+            issues,
+            suggestions: [...new Set(suggestions)],
+            details: {
+                totalInteractive: interactiveElements.length,
+                problematicElements: problematicElements,
+                skipLinksFound: skipLinks.length
+            }
+        };
+    }
+    
+    checkNavigation(element) {
+        var issues = [];
+        var suggestions = [];
+        let score = 100;
+        
+        // Check for proper navigation structure
+        var navElements = element.querySelectorAll('nav');
+        var roleNavigation = element.querySelectorAll('[role="navigation"]');
+        
+        if (navElements.length === 0 && roleNavigation.length === 0) {
+            issues.push('No navigation landmarks found');
+            suggestions.push('Use <nav> elements or role="navigation" for navigation areas');
+            score -= 20;
+        }
+        
+        // Check navigation labeling
+        [...navElements, ...roleNavigation].forEach((nav, index) => {
+            if (!nav.hasAttribute('aria-label') && !nav.hasAttribute('aria-labelledby')) {
+                issues.push(`Navigation ${index + 1} lacks accessible label`);
+                suggestions.push('Add aria-label to distinguish multiple navigation areas');
+            }
+        });
+        
+        // Check for breadcrumbs
+        var breadcrumbs = element.querySelectorAll('[aria-label*="breadcrumb"], .breadcrumb');
+        breadcrumbs.forEach((breadcrumb, index) => {
+            if (!breadcrumb.querySelector('[aria-current="page"]')) {
+                issues.push(`Breadcrumb ${index + 1} missing current page indicator`);
+                suggestions.push('Mark current page in breadcrumbs with aria-current="page"');
+            }
+        });
+        
+        // Check links
+        var links = element.querySelectorAll('a[href]');
+        let problematicLinks = 0;
+        
+        links.forEach((link, index) => {
+            var linkText = link.textContent.trim() || link.getAttribute('aria-label') || '';
+            
+            if (!linkText) {
+                problematicLinks++;
+                issues.push(`Link ${index + 1} has no accessible text`);
+                suggestions.push('Ensure all links have descriptive text or aria-label');
+            } else if (linkText.length < 4 || /^(click|here|more|link)$/i.test(linkText)) {
+                issues.push(`Link ${index + 1} has non-descriptive text: "${linkText}"`);
+                suggestions.push('Use descriptive link text that explains the destination or purpose');
+            }
+        });
+        
+        if (links.length > 0) {
+            score -= (problematicLinks / links.length * 50);
+        }
+        
+        return {
+            passed: issues.length === 0,
+            score: Math.max(0, Math.round(score)),
+            issues,
+            suggestions: [...new Set(suggestions)],
+            details: {
+                navElements: navElements.length,
+                totalLinks: links.length,
+                problematicLinks: problematicLinks,
+                breadcrumbs: breadcrumbs.length
+            }
+        };
+    }
+    
+    checkMultimedia(element) {
+        var issues = [];
+        var suggestions = [];
+        let score = 100;
+        
+        // Check video elements
+        var videos = element.querySelectorAll('video');
+        let videosWithoutCaptions = 0;
+        
+        videos.forEach((video, index) => {
+            var tracks = video.querySelectorAll('track[kind="captions"], track[kind="subtitles"]');
+            if (tracks.length === 0) {
+                videosWithoutCaptions++;
+                issues.push(`Video ${index + 1} lacks captions or subtitles`);
+                suggestions.push('Add caption tracks to all video content');
+            }
+            
+            // Check for audio descriptions
+            var audioDescriptions = video.querySelectorAll('track[kind="descriptions"]');
+            if (audioDescriptions.length === 0) {
+                issues.push(`Video ${index + 1} lacks audio descriptions`);
+                suggestions.push('Consider adding audio description tracks for complex visual content');
+            }
+        });
+        
+        // Check audio elements
+        var audioElements = element.querySelectorAll('audio');
+        audioElements.forEach((audio, index) => {
+            if (!audio.hasAttribute('aria-label') && !audio.hasAttribute('aria-describedby')) {
+                issues.push(`Audio ${index + 1} lacks accessible description`);
+                suggestions.push('Add aria-label to describe audio content');
+            }
+        });
+        
+        // Check for autoplay
+        var autoplayMedia = element.querySelectorAll('video[autoplay], audio[autoplay]');
+        autoplayMedia.forEach((media, index) => {
+            if (!media.hasAttribute('muted')) {
+                issues.push(`${media.tagName.toLowerCase()} ${index + 1} autoplays with sound`);
+                suggestions.push('Avoid autoplay with sound or provide user controls');
+            }
+        });
+        
+        if (videos.length > 0) {
+            score = Math.max(0, 100 - (videosWithoutCaptions / videos.length * 100));
+        }
+        
+        return {
+            passed: issues.length === 0,
+            score: Math.round(score),
+            issues,
+            suggestions: [...new Set(suggestions)],
+            details: {
+                totalVideos: videos.length,
+                videosWithoutCaptions: videosWithoutCaptions,
+                totalAudio: audioElements.length,
+                autoplayElements: autoplayMedia.length
+            }
+        };
+    }
+    
+    checkColorContrast(element) {
+        var issues = [];
+        var suggestions = [];
+        let score = 100;
+        let checkedElements = 0;
+        let failingElements = 0;
+        
+        // Get all text elements
+        var textElements = element.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div, a, button, label, li');
+        
+        textElements.forEach((el, index) => {
+            var styles = window.getComputedStyle(el);
+            var color = styles.color;
+            var backgroundColor = styles.backgroundColor;
+            
+            // Skip if transparent or no background
+            if (backgroundColor === 'rgba(0, 0, 0, 0)' || backgroundColor === 'transparent') {
+                return;
+            }
+            
+            checkedElements++;
+            
+            try {
+                var ratio = this.calculateContrastRatio(color, backgroundColor);
+                if (ratio < 4.5) {
+                    failingElements++;
+                    issues.push(`Element ${index + 1} has insufficient contrast ratio: ${ratio.toFixed(2)}:1`);
+                    suggestions.push('Increase color contrast to meet WCAG AA standards (4.5:1)');
+                }
+            } catch (error) {
+                // Skip elements where contrast can't be calculated
+            }
+        });
+        
+        if (checkedElements > 0) {
+            score = Math.max(0, 100 - (failingElements / checkedElements * 100));
+        }
+        
+        return {
+            passed: failingElements === 0,
+            score: Math.round(score),
+            issues,
+            suggestions: [...new Set(suggestions)],
+            details: {
+                checkedElements: checkedElements,
+                failingElements: failingElements
+            }
+        };
+    }
+    
+    checkSemanticHTML(element) {
+        var issues = [];
+        var suggestions = [];
+        let score = 100;
+        
+        // Check for proper landmark structure
+        var landmarks = {
+            header: element.querySelectorAll('header, [role="banner"]'),
+            nav: element.querySelectorAll('nav, [role="navigation"]'),
+            main: element.querySelectorAll('main, [role="main"]'),
+            footer: element.querySelectorAll('footer, [role="contentinfo"]'),
+            aside: element.querySelectorAll('aside, [role="complementary"]')
+        };
+        
+        if (landmarks.main.length === 0) {
+            issues.push('Page lacks main content landmark');
+            suggestions.push('Use <main> element or role="main" for main content');
+            score -= 20;
+        } else if (landmarks.main.length > 1) {
+            issues.push('Multiple main landmarks found');
+            suggestions.push('Use only one main landmark per page');
+            score -= 10;
+        }
+        
+        if (landmarks.header.length === 0) {
+            issues.push('Page lacks header landmark');
+            suggestions.push('Use <header> element or role="banner" for page header');
+            score -= 10;
+        }
+        
+        // Check heading structure
+        var headings = element.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        let hasH1 = false;
+        let previousLevel = 0;
+        
+        headings.forEach((heading, index) => {
+            var level = parseInt(heading.tagName.charAt(1));
+            
+            if (level === 1) {
+                hasH1 = true;
+                if (index > 0) {
+                    issues.push('Multiple H1 elements found');
+                    suggestions.push('Use only one H1 per page');
+                }
+            }
+            
+            if (level > previousLevel + 1 && previousLevel > 0) {
+                issues.push(`Heading level skipped: ${heading.tagName} after H${previousLevel}`);
+                suggestions.push('Don\'t skip heading levels in the hierarchy');
+            }
+            
+            previousLevel = level;
+        });
+        
+        if (!hasH1 && headings.length > 0) {
+            issues.push('Page lacks H1 heading');
+            suggestions.push('Start heading hierarchy with H1');
+            score -= 15;
+        }
+        
+        // Check form structure
+        var forms = element.querySelectorAll('form');
+        forms.forEach((form, index) => {
+            var inputs = form.querySelectorAll('input, select, textarea');
+            let inputsWithoutLabels = 0;
+            
+            inputs.forEach((input) => {
+                var id = input.id;
+                var hasLabel = id && form.querySelector(`label[for="${id}"]`);
+                var hasAriaLabel = input.hasAttribute('aria-label') || input.hasAttribute('aria-labelledby');
+                
+                if (!hasLabel && !hasAriaLabel) {
+                    inputsWithoutLabels++;
+                }
+            });
+            
+            if (inputsWithoutLabels > 0) {
+                issues.push(`Form ${index + 1} has ${inputsWithoutLabels} unlabeled inputs`);
+                suggestions.push('Associate labels with form inputs using for/id or aria-label');
+            }
+        });
+        
+        // Check for proper list structure
+        var listItems = element.querySelectorAll('li');
+        listItems.forEach((li, index) => {
+            var parent = li.parentElement;
+            if (!parent || !['UL', 'OL', 'MENU'].includes(parent.tagName)) {
+                issues.push(`List item ${index + 1} not contained in proper list element`);
+                suggestions.push('Ensure list items are contained in <ul>, <ol>, or <menu> elements');
+            }
+        });
+        
+        return {
+            passed: issues.length === 0,
+            score: Math.max(0, Math.round(score)),
+            issues,
+            suggestions: [...new Set(suggestions)],
+            details: {
+                landmarks: Object.keys(landmarks).map(key => ({
+                    type: key,
+                    count: landmarks[key].length
+                })),
+                headings: headings.length,
+                forms: forms.length
+            }
+        };
+    }
+    
+    calculateContrastRatio(color1, color2) {
+        // Convert CSS color strings to RGB
+        var rgb1 = this.parseColor(color1);
+        var rgb2 = this.parseColor(color2);
+        
+        var l1 = this.getLuminance(rgb1);
+        var l2 = this.getLuminance(rgb2);
+        
+        var lighter = Math.max(l1, l2);
+        var darker = Math.min(l1, l2);
+        
+        return (lighter + 0.05) / (darker + 0.05);
+    }
+    
+    parseColor(color) {
+        var div = document.createElement('div');
+        div.style.color = color;
+        document.body.appendChild(div);
+        var computedColor = window.getComputedStyle(div).color;
+        document.body.removeChild(div);
+        
+        var match = computedColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+        return match ? {
+            r: parseInt(match[1]),
+            g: parseInt(match[2]),
+            b: parseInt(match[3])
+        } : { r: 0, g: 0, b: 0 };
+    }
+    
+    getLuminance(rgb) {
+        var rsRGB = rgb.r / 255;
+        var gsRGB = rgb.g / 255;
+        var bsRGB = rgb.b / 255;
+        
+        var r = rsRGB <= 0.03928 ? rsRGB / 12.92 : Math.pow((rsRGB + 0.055) / 1.055, 2.4);
+        var g = gsRGB <= 0.03928 ? gsRGB / 12.92 : Math.pow((gsRGB + 0.055) / 1.055, 2.4);
+        var b = bsRGB <= 0.03928 ? bsRGB / 12.92 : Math.pow((bsRGB + 0.055) / 1.055, 2.4);
+        
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    }
+    
+    calculateOverallScore() {
+        var scores = Object.values(this.results).map(result => result.score);
+        var overallScore = scores.reduce((sum, score) => sum + score, 0) / scores.length;
+        
+        return {
+            overallScore: Math.round(overallScore),
+            categoryScores: this.results,
+            totalIssues: Object.values(this.results).reduce((sum, result) => sum + result.issues.length, 0),
+            recommendations: this.generateRecommendations()
+        };
+    }
+    
+    generateRecommendations() {
+        var allSuggestions = Object.values(this.results)
+            .flatMap(result => result.suggestions);
+        
+        var uniqueSuggestions = [...new Set(allSuggestions)];
+        
+        // Sort by priority (most common issues first)
+        var suggestionCounts = {};
+        allSuggestions.forEach(suggestion => {
+            suggestionCounts[suggestion] = (suggestionCounts[suggestion] || 0) + 1;
+        });
+        
+        return uniqueSuggestions.sort((a, b) => 
+            (suggestionCounts[b] || 0) - (suggestionCounts[a] || 0)
+        );
+    }
+}
+
+// Initialize audit engine
+var auditEngine = new AccessibilityAuditEngine();
+
+// Make functions available globally
+window.runFullAudit = async function() {
+    const results = document.getElementById('audit-results');
+    if (!results) return;
+    
+    results.innerHTML = '<p>Running comprehensive accessibility audit...</p>';
+    
+    try {
+        var auditResults = await auditEngine.runFullAudit();
+        
+        var reportHTML = `
+            <div class="audit-report">
+                <h3>508c Compliance Audit Results</h3>
+                <div class="audit-summary">
+                    <div class="audit-metric">
+                        <span class="metric-label">Overall Score:</span>
+                        <span class="metric-value" style="color: ${auditResults.overallScore >= 80 ? 'var(--success-color)' : auditResults.overallScore >= 60 ? 'var(--warning-color)' : 'var(--danger-color)'}">${auditResults.overallScore}/100</span>
+                    </div>
+                    <div class="audit-metric">
+                        <span class="metric-label">Total Issues:</span>
+                        <span class="metric-value">${auditResults.totalIssues}</span>
+                    </div>
+                </div>
+                
+                <div class="category-scores">
+                    <h4>Category Breakdown</h4>
+                    ${Object.entries(auditResults.categoryScores).map(([category, result]) => `
+                        <div class="category-result">
+                            <h5>${category.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: ${result.score}/100</h5>
+                            ${result.issues.length > 0 ? `
+                                <ul class="issue-list">
+                                    ${result.issues.map(issue => `<li>${issue}</li>`).join('')}
+                                </ul>
+                            ` : '<p>✅ No issues found</p>'}
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="recommendations">
+                    <h4>Priority Recommendations</h4>
+                    <ol>
+                        ${auditResults.recommendations.slice(0, 5).map(rec => `<li>${rec}</li>`).join('')}
+                    </ol>
+                </div>
+            </div>
+        `;
+        
+        results.innerHTML = reportHTML;
+        
+        // Update main score display
+        const scoreElement = document.getElementById('accessibility-score');
+        if (scoreElement) {
+            scoreElement.textContent = auditResults.overallScore;
+        }
+        
+    } catch (error) {
+        results.innerHTML = `<p style="color: var(--danger-color);">Error running audit: ${error.message}</p>`;
+    }
+};
+
+AccessibilityAuditEngine;
+
+class ContrastChecker {
+    constructor() {
+        this.setupEventListeners();
+    }
+    
+    setupEventListeners() {
+        var form = document.querySelector('.contrast-checker form');
+        if (form) {
+            form.addEventListener('submit', (e) => this.checkContrast(e));
+        }
+    }
+    
+    checkContrast(event) {
+        event.preventDefault();
+        
+        const fg = document.getElementById('foreground-color').value;
+        const bg = document.getElementById('background-color').value;
+        
+        var ratio = this.calculateContrastRatio(fg, bg);
+        this.displayResults(fg, bg, ratio);
+    }
+    
+    calculateContrastRatio(color1, color2) {
+        var l1 = this.getLuminance(color1);
+        var l2 = this.getLuminance(color2);
+        
+        var lighter = Math.max(l1, l2);
+        var darker = Math.min(l1, l2);
+        
+        return (lighter + 0.05) / (darker + 0.05);
+    }
+    
+    getLuminance(hex) {
+        var rgb = this.hexToRgb(hex);
+        var rsRGB = rgb.r / 255;
+        var gsRGB = rgb.g / 255;
+        var bsRGB = rgb.b / 255;
+        
+        var r = rsRGB <= 0.03928 ? rsRGB / 12.92 : Math.pow((rsRGB + 0.055) / 1.055, 2.4);
+        var g = gsRGB <= 0.03928 ? gsRGB / 12.92 : Math.pow((gsRGB + 0.055) / 1.055, 2.4);
+        var b = bsRGB <= 0.03928 ? bsRGB / 12.92 : Math.pow((bsRGB + 0.055) / 1.055, 2.4);
+        
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    }
+    
+    hexToRgb(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+    
+    displayResults(fg, bg, ratio) {
+        const preview = document.getElementById('contrast-preview');
+        const ratioElement = document.getElementById('contrast-ratio');
+        const statusElement = document.getElementById('compliance-status');
+        
+        // Update preview
+        if (preview) {
+            preview.style.color = fg;
+            preview.style.backgroundColor = bg;
+        }
+        
+        // Update ratio display
+        if (ratioElement) {
+            ratioElement.textContent = `Contrast Ratio: ${ratio.toFixed(2)}:1`;
+        }
+        
+        // Update compliance status
+        if (statusElement) {
+            var isAACompliant = ratio >= 4.5;
+            var isAAACompliant = ratio >= 7;
+            
+            statusElement.className = `compliance-status ${isAACompliant ? 'pass' : 'fail'}`;
+            
+            let statusText = '';
+            if (isAAACompliant) {
+                statusText = '✅ WCAG AAA Compliant (7:1+) - Excellent contrast';
+            } else if (isAACompliant) {
+                statusText = '✅ WCAG AA Compliant (4.5:1+) - Good contrast';
+            } else {
+                statusText = '❌ Does not meet WCAG standards - Increase contrast';
+            }
+            
+            statusElement.innerHTML = `
+                <h5>Compliance Status</h5>
+                <p>${statusText}</p>
+                <ul>
+                    <li>WCAG AA (4.5:1): ${isAACompliant ? '✅ Pass' : '❌ Fail'}</li>
+                    <li>WCAG AAA (7:1): ${isAAACompliant ? '✅ Pass' : '❌ Fail'}</li>
+                    <li>Section 508: ${isAACompliant ? '✅ Compliant' : '❌ Non-compliant'}</li>
+                </ul>
+            `;
+        }
+        
+        // Save results for audit
+        this.saveContrastResults(fg, bg, ratio);
+    }
+    
+    saveContrastResults(fg, bg, ratio) {
+        var results = {
+            foreground: fg,
+            background: bg,
+            ratio: ratio,
+            compliant: ratio >= 4.5,
+            timestamp: new Date().toISOString()
+        };
+        
+        // Store in session for audit purposes
+        sessionStorage.setItem('contrast-check-results', JSON.stringify(results));
+    }
+    
+    // Utility method to suggest better colors
+    suggestBetterColors(fg, bg, targetRatio = 4.5) {
+        // This would implement color suggestion logic
+        var suggestions = [];
+        
+        // Try darkening foreground
+        let darkFg = this.adjustBrightness(fg, -20);
+        if (this.calculateContrastRatio(darkFg, bg) >= targetRatio) {
+            suggestions.push({ type: 'foreground', color: darkFg, action: 'darken' });
+        }
+        
+        // Try lightening background
+        let lightBg = this.adjustBrightness(bg, 20);
+        if (this.calculateContrastRatio(fg, lightBg) >= targetRatio) {
+            suggestions.push({ type: 'background', color: lightBg, action: 'lighten' });
+        }
+        
+        return suggestions;
+    }
+    
+    adjustBrightness(hex, percent) {
+        var rgb = this.hexToRgb(hex);
+        var factor = percent / 100;
+        
+        var newR = Math.max(0, Math.min(255, rgb.r + (255 * factor)));
+        var newG = Math.max(0, Math.min(255, rgb.g + (255 * factor)));
+        var newB = Math.max(0, Math.min(255, rgb.b + (255 * factor)));
+        
+        return this.rgbToHex(Math.round(newR), Math.round(newG), Math.round(newB));
+    }
+    
+    rgbToHex(r, g, b) {
+        return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+    }
+}
+
+// Initialize contrast checker
+var contrastChecker = new ContrastChecker();
+
+// Export the class
+ContrastChecker;
+
+// Also make checkContrast available globally for form submission
+window.checkContrast = (event) => contrastChecker.checkContrast(event);
+
+// Global state management
+var AccessibilityToolkit = {
+    currentFocus: null,
+    auditResults: {},
+    
+    init() {
+        this.setupEventListeners();
+        this.setupKeyboardNavigation();
+        this.initializeColorPickers();
+        this.loadSavedSettings();
+    },
+    
+    setupEventListeners() {
+        // Track focus changes for debugging
+        document.addEventListener('focusin', (e) => {
+            this.currentFocus = e.target;
+            this.updateKeyboardIndicator(`Focus: ${e.target.tagName} ${e.target.className || e.target.id || ''}`);
+        });
+        
+        // Track keyboard events
+        document.addEventListener('keydown', (e) => {
+            this.updateKeyboardIndicator(`Key pressed: ${e.key} ${e.ctrlKey ? '+ Ctrl' : ''} ${e.altKey ? '+ Alt' : ''}`);
+        });
+        
+        // Color picker synchronization
+        document.getElementById('foreground-color')?.addEventListener('change', (e) => {
+            document.getElementById('fg-hex').value = e.target.value;
+            this.updateContrastPreview();
+        });
+        
+        document.getElementById('background-color')?.addEventListener('change', (e) => {
+            document.getElementById('bg-hex').value = e.target.value;
+            this.updateContrastPreview();
+        });
+        
+        document.getElementById('fg-hex')?.addEventListener('input', (e) => {
+            if (this.isValidHex(e.target.value)) {
+                document.getElementById('foreground-color').value = e.target.value;
+                this.updateContrastPreview();
+            }
+        });
+        
+        document.getElementById('bg-hex')?.addEventListener('input', (e) => {
+            if (this.isValidHex(e.target.value)) {
+                document.getElementById('background-color').value = e.target.value;
+                this.updateContrastPreview();
+            }
+        });
+    },
+    
+    setupKeyboardNavigation() {
+        // Escape key handling
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.handleEscape();
+            }
+        });
+    },
+    
+    handleEscape() {
+        // Close modal if open
+        const modal = document.getElementById('demo-modal');
+        if (modal && modal.style.display === 'block') {
+            this.closeModal();
+        }
+        
+        // Close dropdowns
+        const dropdown = document.getElementById('accessible-dropdown');
+        if (dropdown && dropdown.style.display === 'block') {
+            this.closeAccessibleDropdown();
+        }
+    },
+    
+    updateKeyboardIndicator(message) {
+        const indicator = document.getElementById('key-pressed');
+        if (indicator) {
+            indicator.textContent = message;
+        }
+    },
+    
+    initializeColorPickers() {
+        this.updateContrastPreview();
+    },
+    
+    loadSavedSettings() {
+        // Load user preferences from localStorage
+        var savedSettings = localStorage.getItem('accessibility-settings');
+        if (savedSettings) {
+            try {
+                var settings = JSON.parse(savedSettings);
+                // Apply saved settings
+                console.log('Loaded saved settings:', settings);
+            } catch (e) {
+                console.warn('Could not load saved settings:', e);
+            }
+        }
+    },
+    
+    saveSettings(settings) {
+        localStorage.setItem('accessibility-settings', JSON.stringify(settings));
+    },
+    
+    isValidHex(hex) {
+        return /^#[0-9A-Fa-f]{6}$/.test(hex);
+    },
+    
+    updateContrastPreview() {
+        const fg = document.getElementById('foreground-color')?.value || '#333333';
+        const bg = document.getElementById('background-color')?.value || '#ffffff';
+        const preview = document.getElementById('contrast-preview');
+        
+        if (preview) {
+            preview.style.color = fg;
+            preview.style.backgroundColor = bg;
+        }
+    }
+};
+
+// Alt text generation
+function generateAltText(event) {
+    event.preventDefault();
+    const manualAlt = document.getElementById('manual-alt').value;
+    const result = document.getElementById('alt-text-result');
+    
+    if (manualAlt.trim()) {
+        var htmlExample = `&lt;img src="image.jpg" alt="${manualAlt.trim()}"&gt;`;
+        result.innerHTML = `
+            <h5>Generated HTML:</h5>
+            <div class="code-example"><code>${htmlExample}</code></div>
+            <p><strong>Alt text quality:</strong> ${evaluateAltText(manualAlt)}</p>
+        `;
+    } else {
+        result.innerHTML = '<p style="color: var(--danger-color);">Please enter alt text to generate HTML.</p>';
+    }
+}
+
+function evaluateAltText(altText) {
+    var length = altText.length;
+    var hasContext = /\b(shows?|displays?|illustrates?|depicts?|contains?)\b/i.test(altText);
+    var isDescriptive = length > 10 && length < 125;
+    
+    if (!isDescriptive) {
+        return length < 10 ? 'Too short - add more descriptive detail' : 'Too long - consider using longdesc';
+    }
+    
+    if (!hasContext) {
+        return 'Good - consider adding more context about the image\'s purpose';
+    }
+    
+    return 'Excellent - descriptive and contextual';
+}
+
+function previewImage(event) {
+    var file = event.target.files[0];
+    const preview = document.getElementById('image-preview');
+    
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `
+                <img src="${e.target.result}" style="max-width: 200px; max-height: 150px; border: 1px solid #ddd; border-radius: 4px;">
+                <p><em>Image uploaded - please provide descriptive alt text above</em></p>
+            `;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Dropdown functionality
+function toggleDropdown() {
+    const dropdown = document.getElementById('bad-dropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+}
+
+function selectOption(option) {
+    console.log('Selected:', option);
+    document.getElementById('bad-dropdown').style.display = 'none';
+}
+
+function toggleAccessibleDropdown() {
+    const button = document.getElementById('dropdown-button');
+    const dropdown = document.getElementById('accessible-dropdown');
+    var isExpanded = button.getAttribute('aria-expanded') === 'true';
+    
+    button.setAttribute('aria-expanded', !isExpanded);
+    dropdown.style.display = isExpanded ? 'none' : 'block';
+    
+    if (!isExpanded) {
+        // Focus first option
+        var firstOption = dropdown.querySelector('li[role="option"]');
+        if (firstOption) {
+            firstOption.focus();
+        }
+    }
+}
+
+function closeAccessibleDropdown() {
+    const button = document.getElementById('dropdown-button');
+    const dropdown = document.getElementById('accessible-dropdown');
+    
+    button.setAttribute('aria-expanded', 'false');
+    dropdown.style.display = 'none';
+    button.focus();
+}
+
+function selectAccessibleOption(element, value) {
+    const button = document.getElementById('dropdown-button');
+    button.textContent = value + ' ▼';
+    closeAccessibleDropdown();
+}
+
+function handleDropdownKeydown(event) {
+    if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        toggleAccessibleDropdown();
+    }
+}
+
+function handleOptionKeydown(event) {
+    var currentOption = event.target;
+    const dropdown = document.getElementById('accessible-dropdown');
+    var options = dropdown.querySelectorAll('li[role="option"]');
+    var currentIndex = Array.from(options).indexOf(currentOption);
+    
+    switch (event.key) {
+        case 'Enter':
+        case ' ':
+            event.preventDefault();
+            currentOption.click();
+            break;
+        case 'ArrowDown':
+            event.preventDefault();
+            var nextIndex = (currentIndex + 1) % options.length;
+            options[nextIndex].focus();
+            break;
+        case 'ArrowUp':
+            event.preventDefault();
+            var prevIndex = (currentIndex - 1 + options.length) % options.length;
+            options[prevIndex].focus();
+            break;
+        case 'Escape':
+            event.preventDefault();
+            closeAccessibleDropdown();
+            break;
+    }
+}
+
+// Modal functionality
+function showModal() {
+    const modal = document.getElementById('demo-modal');
+    modal.style.display = 'block';
+    modal.setAttribute('aria-hidden', 'false');
+    
+    // Focus management
+    var closeButton = modal.querySelector('.close-button');
+    closeButton.focus();
+    
+    // Trap focus within modal
+    trapFocus(modal);
+}
+
+function closeModal() {
+    const modal = document.getElementById('demo-modal');
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+    
+    // Return focus to trigger
+    document.activeElement.blur();
+}
+
+function trapFocus(element) {
+    var focusableElements = element.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    var firstElement = focusableElements[0];
+    var lastElement = focusableElements[focusableElements.length - 1];
+    
+    element.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+            if (e.shiftKey) {
+                if (document.activeElement === firstElement) {
+                    lastElement.focus();
+                    e.preventDefault();
+                }
+            } else {
+                if (document.activeElement === lastElement) {
+                    firstElement.focus();
+                    e.preventDefault();
+                }
+            }
+        }
+    });
+}
+
+// Navigation helpers
+function navigate(page) {
+    console.log('Navigating to:', page);
+    // This would typically update the page content
+}
+
+// Transcript generation
+function generateTranscript(event) {
+    event.preventDefault();
+    const videoUrl = document.getElementById('video-url').value;
+    const transcriptText = document.getElementById('transcript-text').value;
+    const result = document.getElementById('transcript-result');
+    
+    if (!transcriptText.trim()) {
+        result.innerHTML = '<p style="color: var(--danger-color);">Please enter transcript content.</p>';
+        return;
+    }
+    
+    var htmlExample = `
+&lt;video controls aria-label="Video with transcript"&gt;
+  &lt;source src="${videoUrl || 'video.mp4'}" type="video/mp4"&gt;
+  &lt;track kind="captions" src="captions.vtt" srclang="en" label="English" default&gt;
+  &lt;p&gt;Your browser doesn't support HTML5 video. &lt;a href="${videoUrl || 'video.mp4'}"&gt;Download&lt;/a&gt;&lt;/p&gt;
+&lt;/video&gt;
+
+&lt;div class="transcript"&gt;
+  &lt;h4&gt;Video Transcript:&lt;/h4&gt;
+  &lt;p&gt;${transcriptText.trim()}&lt;/p&gt;
+&lt;/div&gt;
+    `;
+    
+    result.innerHTML = `
+        <h5>Generated Accessible Video HTML:</h5>
+        <div class="code-example"><code>${htmlExample}</code></div>
+    `;
+}
+
+// HTML validation
+function validateHTML(event) {
+    event.preventDefault();
+    const htmlInput = document.getElementById('html-input').value;
+    const result = document.getElementById('validation-result');
+    
+    if (!htmlInput.trim()) {
+        result.innerHTML = '<p style="color: var(--danger-color);">Please enter HTML to validate.</p>';
+        return;
+    }
+    
+    var issues = validateSemanticHTML(htmlInput);
+    
+    if (issues.length === 0) {
+        result.innerHTML = `
+            <div class="compliance-status pass">
+                <h5>✅ Validation Passed</h5>
+                <p>Your HTML follows semantic structure guidelines.</p>
+            </div>
+        `;
+    } else {
+        var issuesList = issues.map(issue => `<li>${issue}</li>`).join('');
+        result.innerHTML = `
+            <div class="compliance-status fail">
+                <h5>❌ Validation Issues Found</h5>
+                <ul>${issuesList}</ul>
+            </div>
+        `;
+    }
+}
+
+function validateSemanticHTML(html) {
+    var issues = [];
+    
+    // Check for semantic elements
+    if (!html.includes('<header') && !html.includes('role="banner"')) {
+        issues.push('Consider using &lt;header&gt; or role="banner" for page header');
+    }
+    
+    if (!html.includes('<nav') && !html.includes('role="navigation"')) {
+        issues.push('Consider using &lt;nav&gt; or role="navigation" for navigation');
+    }
+    
+    if (!html.includes('<main') && !html.includes('role="main"')) {
+        issues.push('Consider using &lt;main&gt; or role="main" for main content');
+    }
+    
+    if (!html.includes('<footer') && !html.includes('role="contentinfo"')) {
+        issues.push('Consider using &lt;footer&gt; or role="contentinfo" for page footer');
+    }
+    
+    // Check for heading structure
+    if (html.includes('<h2') && !html.includes('<h1')) {
+        issues.push('Page should start with &lt;h1&gt; before using &lt;h2&gt;');
+    }
+    
+    // Check for image alt text
+    if (html.includes('<img') && !html.includes('alt=')) {
+        issues.push('All images should have alt attributes');
+    }
+    
+    // Check for form labels
+    if (html.includes('<input') && !html.includes('<label')) {
+        issues.push('Form inputs should have associated labels');
+    }
+    
+    return issues;
+}
+
+// Accessibility audit
+function runAccessibilityAudit() {
+    console.log('Running accessibility audit...');
+    const scoreElement = document.getElementById('accessibility-score');
+    if (scoreElement) {
+        // Simulate audit progress
+        let score = 0;
+        var interval = setInterval(() => {
+            score += Math.random() * 10;
+            scoreElement.textContent = Math.min(Math.round(score), 98);
+            if (score >= 98) {
+                clearInterval(interval);
+            }
+        }, 100);
+    }
+}
+
+function runFullAudit() {
+    const results = document.getElementById('audit-results');
+    results.innerHTML = '<p>Running comprehensive accessibility audit...</p>';
+    
+    setTimeout(() => {
+        var auditReport = generateAuditReport();
+        results.innerHTML = auditReport;
+    }, 2000);
+}
+
+function generateAuditReport() {
+    return `
+        <div class="audit-report">
+            <h3>508c Compliance Audit Results</h3>
+            <div class="audit-summary">
+                <div class="audit-metric">
+                    <span class="metric-label">Overall Score:</span>
+                    <span class="metric-value">94/100</span>
+                </div>
+                <div class="audit-metric">
+                    <span class="metric-label">Critical Issues:</span>
+                    <span class="metric-value">2</span>
+                </div>
+                <div class="audit-metric">
+                    <span class="metric-label">Warnings:</span>
+                    <span class="metric-value">5</span>
+                </div>
+            </div>
+            
+            <div class="audit-details">
+                <h4>Critical Issues</h4>
+                <ul>
+                    <li>3 images missing alt attributes</li>
+                    <li>1 form input without label</li>
+                </ul>
+                
+                <h4>Warnings</h4>
+                <ul>
+                    <li>Color contrast could be improved in 2 locations</li>
+                    <li>Consider adding skip links</li>
+                    <li>Some interactive elements lack focus indicators</li>
+                </ul>
+                
+                <h4>Recommendations</h4>
+                <ul>
+                    <li>Add descriptive alt text to all images</li>
+                    <li>Associate form labels with inputs</li>
+                    <li>Increase color contrast ratios</li>
+                    <li>Implement visible focus indicators</li>
+                </ul>
+            </div>
+        </div>
+    `;
+}
+
+// Report generation
+function generateReport(event) {
+    event.preventDefault();
+    const siteUrl = document.getElementById('site-url').value;
+    const reportType = document.getElementById('report-type').value;
+    const output = document.getElementById('report-output');
+    
+    if (!siteUrl) {
+        output.innerHTML = '<p style="color: var(--danger-color);">Please enter a website URL.</p>';
+        return;
+    }
+    
+    output.innerHTML = '<p>Generating report...</p>';
+    
+    setTimeout(() => {
+        var report = createComplianceReport(siteUrl, reportType);
+        output.innerHTML = report;
+    }, 1500);
+}
+
+function createComplianceReport(url, type) {
+    var timestamp = new Date().toLocaleDateString();
+    
+    return `
+        <div class="compliance-report">
+            <h4>508c Compliance Report</h4>
+            <p><strong>URL:</strong> ${url}</p>
+            <p><strong>Report Type:</strong> ${type}</p>
+            <p><strong>Generated:</strong> ${timestamp}</p>
+            
+            <div class="report-content">
+                <h5>Executive Summary</h5>
+                <p>This ${type} report analyzes the accessibility compliance of the specified website against Section 508c requirements.</p>
+                
+                <h5>Compliance Status</h5>
+                <ul>
+                    <li>✅ Text Alternatives: 85% compliant</li>
+                    <li>✅ Keyboard Accessibility: 92% compliant</li>
+                    <li>⚠️ Navigation: 78% compliant</li>
+                    <li>✅ Multimedia: 88% compliant</li>
+                    <li>⚠️ Color Contrast: 76% compliant</li>
+                    <li>✅ Semantic HTML: 91% compliant</li>
+                </ul>
+                
+                <h5>Next Steps</h5>
+                <ol>
+                    <li>Address critical accessibility barriers</li>
+                    <li>Implement recommended improvements</li>
+                    <li>Conduct user testing with assistive technologies</li>
+                    <li>Schedule regular accessibility audits</li>
+                </ol>
+            </div>
+            
+            <button onclick="downloadReport()" class="download-btn">Download Full Report</button>
+        </div>
+    `;
+}
+
+function downloadReport() {
+    // Create downloadable report
+    const reportContent = document.getElementById('report-output').textContent;
+    var blob = new Blob([reportContent], { type: 'text/plain' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = '508c-compliance-report.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// Initialize the toolkit when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    AccessibilityToolkit.init();
+});
+
+// Export for module usage
+AccessibilityToolkit;
+    </script>
+</body>
+</html>

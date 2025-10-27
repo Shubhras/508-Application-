@@ -1,0 +1,1085 @@
+app:
+  description: 'Comprehensive WCAG 2.1/2.2 accessibility validation and AI-powered remediation workflow. Analyzes web content for accessibility compliance and provides detailed remediation suggestions with code examples.'
+  icon: ♿
+  icon_background: '#E3F2FD'
+  mode: advanced-chat
+  name: WCAG Accessibility Validator & Remediation
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.0.26@c1e643ac6a7732f6333a783320b4d3026fa5e31d8e7026375b98d44418d33f26
+kind: app
+version: 0.3.0
+workflow:
+  conversation_variables:
+  - description: 'Stores accessibility analysis results including errors, warnings, and passed criteria'
+    id: accessibility-results
+    name: accessibility_results
+    selector:
+    - conversation
+    - accessibility_results
+    value: []
+    value_type: array[object]
+  - description: 'Stores AI-generated remediation suggestions and code fixes'
+    id: remediation-data
+    name: remediation_data
+    selector:
+    - conversation
+    - remediation_data
+    value: []
+    value_type: array[object]
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .HTML
+      - .HTM
+      - .TXT
+      allowed_file_types:
+      - document
+      allowed_file_upload_methods:
+      - local_file
+      enabled: true
+      fileUploadConfig:
+        file_size_limit: 15
+        workflow_file_upload_limit: 3
+      number_limits: 3
+    opening_statement: 'Welcome to the WCAG Accessibility Validator & Remediation Tool! 🛡️\n\nI can help you:\n✅ Analyze websites and HTML content for WCAG 2.1/2.2 compliance\n🔧 Provide AI-powered accessibility fixes\n📊 Generate detailed compliance reports\n🎯 Offer step-by-step remediation guidance\n\nTo get started, please provide:\n• A website URL to analyze\n• HTML content to validate\n• Specific accessibility concerns\n\nWhat would you like me to check for accessibility compliance?'
+    retriever_resource:
+      enabled: false
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions:
+    - 'Analyze my website homepage for WCAG AA compliance'
+    - 'Check this HTML form for accessibility issues'
+    - 'Generate a comprehensive accessibility report'
+    - 'What are the most critical accessibility fixes needed?'
+    suggested_questions_after_answer:
+      enabled: true
+    text_to_speech:
+      enabled: false
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        sourceType: start
+        targetType: llm
+      id: start-input-analysis
+      source: 'start-node'
+      sourceHandle: source
+      target: 'input-analysis'
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: llm
+        targetType: if-else
+      id: input-analysis-content-type-check
+      source: 'input-analysis'
+      sourceHandle: source
+      target: 'content-type-check'
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: if-else
+        targetType: code
+      id: content-type-check-true-url-processor
+      source: 'content-type-check'
+      sourceHandle: 'true'
+      target: 'url-processor'
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: if-else
+        targetType: code
+      id: content-type-check-false-html-processor
+      source: 'content-type-check'
+      sourceHandle: 'false'
+      target: 'html-processor'
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: code
+        targetType: llm
+      id: url-processor-wcag-analyzer
+      source: 'url-processor'
+      sourceHandle: source
+      target: 'wcag-analyzer'
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: code
+        targetType: llm
+      id: html-processor-wcag-analyzer
+      source: 'html-processor'
+      sourceHandle: source
+      target: 'wcag-analyzer'
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: llm
+        targetType: code
+      id: wcag-analyzer-issue-categorizer
+      source: 'wcag-analyzer'
+      sourceHandle: source
+      target: 'issue-categorizer'
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: code
+        targetType: assigner
+      id: issue-categorizer-results-storage
+      source: 'issue-categorizer'
+      sourceHandle: source
+      target: 'results-storage'
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: assigner
+        targetType: if-else
+      id: results-storage-remediation-check
+      source: 'results-storage'
+      sourceHandle: source
+      target: 'remediation-check'
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: if-else
+        targetType: llm
+      id: remediation-check-true-ai-remediator
+      source: 'remediation-check'
+      sourceHandle: 'true'
+      target: 'ai-remediator'
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: llm
+        targetType: code
+      id: ai-remediator-code-generator
+      source: 'ai-remediator'
+      sourceHandle: source
+      target: 'code-generator'
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: code
+        targetType: assigner
+      id: code-generator-remediation-storage
+      source: 'code-generator'
+      sourceHandle: source
+      target: 'remediation-storage'
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: assigner
+        targetType: llm
+      id: remediation-storage-report-generator
+      source: 'remediation-storage'
+      sourceHandle: source
+      target: 'report-generator'
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: if-else
+        targetType: llm
+      id: remediation-check-false-basic-report
+      source: 'remediation-check'
+      sourceHandle: 'false'
+      target: 'basic-report'
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: llm
+        targetType: answer
+      id: report-generator-final-output
+      source: 'report-generator'
+      sourceHandle: source
+      target: 'final-output'
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: llm
+        targetType: answer
+      id: basic-report-simple-output
+      source: 'basic-report'
+      sourceHandle: source
+      target: 'simple-output'
+      targetHandle: target
+      type: custom
+    nodes:
+    - data:
+        desc: 'Entry point for WCAG accessibility validation workflow'
+        selected: false
+        title: Start Accessibility Analysis
+        type: start
+        variables: []
+      height: 54
+      id: 'start-node'
+      position:
+        x: 30
+        y: 300
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: 'Analyzes user input to determine content type and validation scope'
+        model:
+          completion_params:
+            temperature: 0.3
+          mode: chat
+          name: gpt-4o
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: input-analysis-prompt
+          role: system
+          text: |
+            You are an accessibility validation expert. Analyze the user's input to determine what type of content needs WCAG validation.
+
+            User input: {{#sys.query#}}
+
+            Determine:
+            1. Is this a URL/website to analyze? (starts with http/https, contains domain)
+            2. Is this HTML content to validate? (contains HTML tags)
+            3. What WCAG compliance level is requested? (A, AA, AAA - default to AA)
+            4. Which WCAG version? (2.0, 2.1, 2.2 - default to 2.1)
+
+            Respond with ONLY "URL" or "HTML" based on the content type.
+            If unclear, respond "HTML".
+        selected: false
+        title: Input Analysis
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 96
+      id: 'input-analysis'
+      position:
+        x: 334
+        y: 300
+      type: custom
+      width: 244
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: contains
+            id: url-check-condition
+            value: 'URL'
+            varType: string
+            variable_selector:
+            - 'input-analysis'
+            - text
+          id: 'true'
+          logical_operator: and
+        desc: 'Routes processing based on content type (URL vs HTML)'
+        selected: false
+        title: Content Type Router
+        type: if-else
+      height: 126
+      id: 'content-type-check'
+      position:
+        x: 638
+        y: 300
+      type: custom
+      width: 244
+    - data:
+        code: |
+          def main(user_input: str) -> dict:
+              """
+              Process URL input for accessibility analysis
+              Extracts domain, validates URL format, and prepares for WCAG checking
+              """
+              import re
+              
+              # Extract URL from user input
+              url_pattern = r'https?://[^\s<>"{}|\\^`[\]]+'
+              urls = re.findall(url_pattern, user_input)
+              
+              if urls:
+                  url = urls[0]
+                  # Extract domain for context
+                  domain_match = re.search(r'https?://([^/]+)', url)
+                  domain = domain_match.group(1) if domain_match else 'unknown'
+                  
+                  return {
+                      "processed_content": f"Website URL: {url}",
+                      "content_type": "url",
+                      "target_url": url,
+                      "domain": domain,
+                      "status": "URL identified and validated"
+                  }
+              else:
+                  return {
+                      "processed_content": "No valid URL found in input",
+                      "content_type": "error",
+                      "status": "URL validation failed"
+                  }
+        code_language: python3
+        desc: 'Processes and validates URL input for accessibility analysis'
+        outputs:
+          processed_content:
+            type: string
+          content_type:
+            type: string
+          target_url:
+            type: string
+          domain:
+            type: string
+          status:
+            type: string
+        selected: false
+        title: URL Content Processor
+        type: code
+        variables:
+        - value_selector:
+          - sys
+          - query
+          variable: user_input
+      height: 54
+      id: 'url-processor'
+      position:
+        x: 942
+        y: 200
+      type: custom
+      width: 244
+    - data:
+        code: |
+          def main(user_input: str) -> dict:
+              """
+              Process HTML content for accessibility analysis
+              Cleans and validates HTML structure
+              """
+              import re
+              
+              # Basic HTML detection and cleaning
+              if '<html' in user_input.lower() or '<' in user_input:
+                  # Remove excessive whitespace but preserve structure
+                  cleaned_html = re.sub(r'\s+', ' ', user_input.strip())
+                  
+                  # Count basic elements for analysis
+                  img_count = len(re.findall(r'<img[^>]*>', cleaned_html, re.IGNORECASE))
+                  form_count = len(re.findall(r'<form[^>]*>', cleaned_html, re.IGNORECASE))
+                  heading_count = len(re.findall(r'<h[1-6][^>]*>', cleaned_html, re.IGNORECASE))
+                  
+                  return {
+                      "processed_content": cleaned_html[:2000] + "..." if len(cleaned_html) > 2000 else cleaned_html,
+                      "content_type": "html",
+                      "element_stats": {
+                          "images": img_count,
+                          "forms": form_count,
+                          "headings": heading_count
+                      },
+                      "status": "HTML content processed and analyzed"
+                  }
+              else:
+                  return {
+                      "processed_content": user_input,
+                      "content_type": "text",
+                      "status": "Treated as general accessibility inquiry"
+                  }
+        code_language: python3
+        desc: 'Processes and validates HTML content for accessibility analysis'
+        outputs:
+          processed_content:
+            type: string
+          content_type:
+            type: string
+          element_stats:
+            type: object
+          status:
+            type: string
+        selected: false
+        title: HTML Content Processor
+        type: code
+        variables:
+        - value_selector:
+          - sys
+          - query
+          variable: user_input
+      height: 54
+      id: 'html-processor'
+      position:
+        x: 942
+        y: 400
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: 'Performs comprehensive WCAG 2.1/2.2 accessibility analysis'
+        model:
+          completion_params:
+            temperature: 0.2
+          mode: chat
+          name: gpt-4o
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: wcag-analysis-prompt
+          role: system
+          text: |
+            You are a WCAG 2.1/2.2 accessibility expert. Perform a comprehensive accessibility analysis of the provided content.
+
+            Content to analyze:
+            {{#url-processor.processed_content#}}{{#html-processor.processed_content#}}
+
+            Analyze for WCAG 2.1 Level AA compliance. Check for:
+
+            **CRITICAL ERRORS (WCAG Level A):**
+            1. Images without alt attributes (1.1.1)
+            2. Missing form labels (1.3.1, 3.3.2)
+            3. Missing page language (3.1.1)
+            4. Non-descriptive link text (2.4.4)
+            5. Missing heading hierarchy (1.3.1)
+            6. Keyboard accessibility issues (2.1.1)
+
+            **WARNINGS (WCAG Level AA):**
+            1. Color contrast issues (1.4.3)
+            2. Focus indicators (2.4.7)
+            3. Resize issues (1.4.4)
+            4. Audio control (1.4.2)
+
+            **SUCCESS CRITERIA:**
+            - Proper semantic structure
+            - Accessible forms
+            - Good navigation
+            - Screen reader compatibility
+
+            Return analysis in this JSON format:
+            {
+              "analysis_summary": {
+                "total_issues": number,
+                "critical_errors": number,
+                "warnings": number,
+                "passed_criteria": number,
+                "compliance_score": number (0-100)
+              },
+              "detailed_findings": [
+                {
+                  "type": "error|warning|success",
+                  "wcag_criterion": "1.1.1",
+                  "title": "Brief issue title",
+                  "description": "Detailed description",
+                  "impact": "high|medium|low",
+                  "affected_elements": "CSS selector or description",
+                  "remediation_priority": "critical|high|medium|low"
+                }
+              ]
+            }
+        selected: false
+        title: WCAG Accessibility Analyzer
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 96
+      id: 'wcag-analyzer'
+      position:
+        x: 1246
+        y: 300
+      type: custom
+      width: 244
+    - data:
+        code: |
+          import json
+
+          def main(analysis_result: str) -> dict:
+              """
+              Categorizes and processes WCAG analysis results
+              Structures data for storage and further processing
+              """
+              try:
+                  # Parse the analysis JSON
+                  analysis = json.loads(analysis_result)
+                  
+                  # Categorize findings
+                  errors = []
+                  warnings = []
+                  successes = []
+                  
+                  for finding in analysis.get('detailed_findings', []):
+                      finding_obj = {
+                          'wcag_criterion': finding.get('wcag_criterion'),
+                          'title': finding.get('title'),
+                          'description': finding.get('description'),
+                          'impact': finding.get('impact'),
+                          'affected_elements': finding.get('affected_elements'),
+                          'priority': finding.get('remediation_priority')
+                      }
+                      
+                      if finding.get('type') == 'error':
+                          errors.append(finding_obj)
+                      elif finding.get('type') == 'warning':
+                          warnings.append(finding_obj)
+                      else:
+                          successes.append(finding_obj)
+                  
+                  # Calculate metrics
+                  total_issues = len(errors) + len(warnings)
+                  compliance_score = analysis.get('analysis_summary', {}).get('compliance_score', 0)
+                  
+                  result = {
+                      'summary': {
+                          'total_issues': total_issues,
+                          'errors': len(errors),
+                          'warnings': len(warnings),
+                          'successes': len(successes),
+                          'compliance_score': compliance_score
+                      },
+                      'categorized_findings': {
+                          'errors': errors,
+                          'warnings': warnings,
+                          'successes': successes
+                      },
+                      'needs_remediation': total_issues > 0
+                  }
+                  
+                  return {"structured_results": result}
+                  
+              except json.JSONDecodeError:
+                  return {
+                      "structured_results": {
+                          "error": "Failed to parse analysis results",
+                          "raw_output": analysis_result
+                      }
+                  }
+        code_language: python3
+        desc: 'Categorizes accessibility findings and calculates metrics'
+        outputs:
+          structured_results:
+            type: object
+        selected: false
+        title: Issue Categorizer & Metrics Calculator
+        type: code
+        variables:
+        - value_selector:
+          - wcag-analyzer
+          - text
+          variable: analysis_result
+      height: 54
+      id: 'issue-categorizer'
+      position:
+        x: 1550
+        y: 300
+      type: custom
+      width: 244
+    - data:
+        assigned_variable_selector:
+        - conversation
+        - accessibility_results
+        desc: 'Stores accessibility analysis results in conversation memory'
+        input_variable_selector:
+        - issue-categorizer
+        - structured_results
+        selected: false
+        title: Store Analysis Results
+        type: assigner
+        write_mode: append
+      height: 88
+      id: 'results-storage'
+      position:
+        x: 1854
+        y: 300
+      type: custom
+      width: 244
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: is
+            id: needs-remediation-check
+            value: true
+            varType: boolean
+            variable_selector:
+            - issue-categorizer
+            - structured_results
+            - needs_remediation
+          id: 'true'
+          logical_operator: and
+        desc: 'Determines if AI-powered remediation is needed'
+        selected: false
+        title: Remediation Required?
+        type: if-else
+      height: 126
+      id: 'remediation-check'
+      position:
+        x: 2158
+        y: 300
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: 'Generates AI-powered accessibility remediation suggestions'
+        model:
+          completion_params:
+            temperature: 0.4
+          mode: chat
+          name: gpt-4o
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: ai-remediation-prompt
+          role: system
+          text: |
+            You are an expert accessibility developer specializing in WCAG remediation. Generate practical, actionable fixes for the identified accessibility issues.
+
+            Analysis Results: {{#issue-categorizer.structured_results#}}
+
+            For each ERROR and WARNING, provide detailed remediation:
+
+            **REMEDIATION FRAMEWORK:**
+            1. **Immediate Fixes** - Quick wins that can be implemented immediately
+            2. **Code Examples** - Specific HTML/CSS/JavaScript solutions
+            3. **Best Practices** - Long-term accessibility improvements
+            4. **Testing Methods** - How to verify the fix works
+
+            **FOCUS AREAS:**
+            - **Alt Text & Images**: Descriptive alternatives for visual content
+            - **Form Accessibility**: Labels, fieldsets, error handling
+            - **Semantic Structure**: Proper heading hierarchy, landmarks
+            - **Keyboard Navigation**: Focus management, skip links
+            - **Color & Contrast**: Meeting WCAG AA contrast ratios
+            - **Screen Reader Support**: ARIA labels and descriptions
+
+            Return structured remediation in JSON format:
+            {
+              "remediation_plan": {
+                "priority_fixes": [
+                  {
+                    "wcag_criterion": "1.1.1",
+                    "issue_title": "Images without alt text",
+                    "fix_complexity": "easy|medium|complex",
+                    "estimated_time": "15 minutes",
+                    "before_code": "HTML code showing the issue",
+                    "after_code": "Fixed HTML code",
+                    "explanation": "Why this fix improves accessibility",
+                    "testing_steps": ["How to test the fix"],
+                    "impact_improvement": "High - enables screen reader access"
+                  }
+                ],
+                "css_improvements": "CSS code for better accessibility",
+                "javascript_enhancements": "JS code for dynamic accessibility",
+                "aria_additions": "ARIA attributes to add"
+              }
+            }
+        selected: false
+        title: AI Accessibility Remediator
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 96
+      id: 'ai-remediator'
+      position:
+        x: 2462
+        y: 200
+      type: custom
+      width: 244
+    - data:
+        code: |
+          import json
+
+          def main(remediation_response: str) -> dict:
+              """
+              Generates complete accessible code solutions
+              Creates before/after comparisons and comprehensive fixes
+              """
+              try:
+                  remediation = json.loads(remediation_response)
+                  plan = remediation.get('remediation_plan', {})
+                  
+                  # Generate comprehensive code package
+                  code_package = {
+                      'html_fixes': [],
+                      'css_improvements': plan.get('css_improvements', ''),
+                      'javascript_enhancements': plan.get('javascript_enhancements', ''),
+                      'aria_additions': plan.get('aria_additions', ''),
+                      'implementation_guide': []
+                  }
+                  
+                  # Process each fix
+                  for fix in plan.get('priority_fixes', []):
+                      html_fix = {
+                          'criterion': fix.get('wcag_criterion'),
+                          'title': fix.get('issue_title'),
+                          'complexity': fix.get('fix_complexity'),
+                          'time_estimate': fix.get('estimated_time'),
+                          'before': fix.get('before_code', ''),
+                          'after': fix.get('after_code', ''),
+                          'explanation': fix.get('explanation', ''),
+                          'testing': fix.get('testing_steps', [])
+                      }
+                      code_package['html_fixes'].append(html_fix)
+                      
+                      # Add to implementation guide
+                      guide_step = {
+                          'step': len(code_package['implementation_guide']) + 1,
+                          'action': f"Fix {fix.get('wcag_criterion')}: {fix.get('issue_title')}",
+                          'complexity': fix.get('fix_complexity'),
+                          'priority': 'high' if fix.get('fix_complexity') == 'easy' else 'medium'
+                      }
+                      code_package['implementation_guide'].append(guide_step)
+                  
+                  # Generate complete fixed HTML template
+                  complete_template = """<!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Accessibility Enhanced Page</title>
+              <style>
+                  /* Accessibility Improvements */
+                  {}
+              </style>
+          </head>
+          <body>
+              <!-- Accessibility fixes applied -->
+              {}
+              
+              <script>
+                  // Dynamic accessibility enhancements
+                  {}
+              </script>
+          </body>
+          </html>""".format(
+              code_package['css_improvements'],
+              '\n'.join([fix['after'] for fix in code_package['html_fixes']]),
+              code_package['javascript_enhancements']
+          )
+                  
+                  code_package['complete_template'] = complete_template
+                  
+                  return {"generated_code": code_package}
+                  
+              except Exception as e:
+                  return {"generated_code": {"error": f"Code generation failed: {str(e)}"}}
+        code_language: python3
+        desc: 'Generates complete accessible code solutions with before/after examples'
+        outputs:
+          generated_code:
+            type: object
+        selected: false
+        title: Accessible Code Generator
+        type: code
+        variables:
+        - value_selector:
+          - ai-remediator
+          - text
+          variable: remediation_response
+      height: 54
+      id: 'code-generator'
+      position:
+        x: 2766
+        y: 200
+      type: custom
+      width: 244
+    - data:
+        assigned_variable_selector:
+        - conversation
+        - remediation_data
+        desc: 'Stores generated remediation code and guidance'
+        input_variable_selector:
+        - code-generator
+        - generated_code
+        selected: false
+        title: Store Remediation Data
+        type: assigner
+        write_mode: append
+      height: 88
+      id: 'remediation-storage'
+      position:
+        x: 3070
+        y: 200
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: 'Generates comprehensive accessibility report with remediation'
+        model:
+          completion_params:
+            temperature: 0.3
+          mode: chat
+          name: gpt-4o
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: comprehensive-report-prompt
+          role: system
+          text: |
+            Generate a comprehensive WCAG accessibility report with remediation guidance.
+
+            Analysis Results: {{#issue-categorizer.structured_results#}}
+            Remediation Solutions: {{#code-generator.generated_code#}}
+
+            Create a detailed report including:
+
+            ## 🛡️ **WCAG Accessibility Analysis Report**
+
+            ### **Executive Summary**
+            - Overall compliance score and status
+            - Critical issues requiring immediate attention
+            - Compliance level achieved (A, AA, AAA)
+
+            ### **📊 Detailed Findings**
+            
+            **🚨 Critical Errors (Must Fix)**
+            [List all errors with WCAG criteria and impact]
+
+            **⚠️ Warnings (Should Fix)**
+            [List all warnings with improvement suggestions]
+
+            **✅ Passed Criteria**
+            [Highlight successful accessibility implementations]
+
+            ### **🔧 AI-Powered Remediation Plan**
+
+            **Quick Wins (< 30 minutes)**
+            [Easy fixes with high impact]
+
+            **Medium Complexity (1-2 hours)**
+            [Moderate fixes requiring some development]
+
+            **Complex Implementation (> 2 hours)**
+            [Advanced fixes requiring significant changes]
+
+            ### **💻 Code Solutions**
+
+            For each major issue, provide:
+            ```html
+            <!-- BEFORE (Inaccessible) -->
+            [Current problematic code]
+
+            <!-- AFTER (Accessible) -->
+            [Fixed, WCAG-compliant code]
+            ```
+
+            ### **🧪 Testing & Validation**
+            - Automated testing recommendations
+            - Manual testing procedures
+            - Screen reader testing steps
+            - Keyboard navigation validation
+
+            ### **📈 Next Steps**
+            1. Immediate actions (next 24 hours)
+            2. Short-term improvements (next week)
+            3. Long-term accessibility strategy
+
+            Make the report actionable, specific, and encouraging. Focus on the business and user benefits of accessibility improvements.
+        selected: false
+        title: Comprehensive Report Generator
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 96
+      id: 'report-generator'
+      position:
+        x: 3374
+        y: 200
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: 'Generates basic accessibility summary for content with no issues'
+        model:
+          completion_params:
+            temperature: 0.5
+          mode: chat
+          name: gpt-4o
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: basic-report-prompt
+          role: system
+          text: |
+            Generate a positive accessibility summary report.
+
+            Analysis Results: {{#issue-categorizer.structured_results#}}
+
+            The analysis found minimal or no accessibility issues. Create an encouraging report that:
+
+            ## 🎉 **Excellent Accessibility Implementation!**
+
+            ### **Compliance Status: ✅ WCAG AA Compliant**
+
+            Your content demonstrates strong accessibility practices:
+
+            **✅ Strengths Identified:**
+            [List successful accessibility implementations]
+
+            **🚀 Enhancement Opportunities:**
+            [Suggest optional improvements for even better accessibility]
+
+            **💡 Maintenance Recommendations:**
+            - Regular accessibility audits
+            - User testing with assistive technologies
+            - Stay updated with WCAG 2.2 guidelines
+            - Consider AAA level enhancements
+
+            **🎯 Accessibility Best Practices to Continue:**
+            - Semantic HTML structure
+            - Proper heading hierarchy
+            - Descriptive alt text
+            - Keyboard accessibility
+            - Color contrast compliance
+
+            Keep up the excellent work in creating inclusive digital experiences!
+        selected: false
+        title: Basic Accessibility Report
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 96
+      id: 'basic-report'
+      position:
+        x: 2462
+        y: 400
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#report-generator.text#}}'
+        desc: 'Final output with comprehensive accessibility report and remediation'
+        selected: false
+        title: Comprehensive Accessibility Report
+        type: answer
+        variables: []
+      height: 105
+      id: 'final-output'
+      position:
+        x: 3678
+        y: 200
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#basic-report.text#}}'
+        desc: 'Output for content with minimal accessibility issues'
+        selected: false
+        title: Basic Accessibility Summary
+        type: answer
+        variables: []
+      height: 105
+      id: 'simple-output'
+      position:
+        x: 2766
+        y: 400
+      type: custom
+      width: 244
+    # Descriptive Notes for Workflow Understanding
+    - data:
+        author: WCAG Expert
+        desc: 'Workflow overview and introduction'
+        height: 220
+        selected: false
+        showAuthor: true
+        text: '{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"🛡️ WCAG Accessibility Validator & Remediation Workflow","type":"text","version":1},{"type":"linebreak","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"This comprehensive workflow provides:","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"✅ WCAG 2.1/2.2 compliance analysis","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"🔧 AI-powered remediation suggestions","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"💻 Complete code solutions","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"📊 Detailed compliance reports","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"🎯 Prioritized implementation guidance","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}'
+        theme: blue
+        title: 'Workflow Overview'
+        type: ''
+        width: 350
+      height: 220
+      id: 'overview-note'
+      position:
+        x: 30
+        y: 50
+      type: custom-note
+      width: 350
+    - data:
+        author: WCAG Expert
+        desc: 'Input processing explanation'
+        height: 180
+        selected: false
+        showAuthor: true
+        text: '{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"📝 Smart Input Processing","type":"text","version":1},{"type":"linebreak","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"The workflow intelligently detects:","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"🌐 Website URLs for live analysis","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"📄 HTML content for code review","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"💬 General accessibility questions","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"⚙️ WCAG compliance level preferences","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}'
+        theme: green
+        title: 'Input Detection'
+        type: ''
+        width: 300
+      height: 180
+      id: 'input-note'
+      position:
+        x: 420
+        y: 50
+      type: custom-note
+      width: 300
+    - data:
+        author: WCAG Expert
+        desc: 'WCAG analysis capabilities'
+        height: 200
+        selected: false
+        showAuthor: true
+        text: '{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"🔍 Comprehensive WCAG Analysis","type":"text","version":1},{"type":"linebreak","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"Checks all major WCAG criteria:","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"🖼️ Image alt text (1.1.1)","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"📋 Form labels (1.3.1, 3.3.2)","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"🎨 Color contrast (1.4.3)","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"⌨️ Keyboard access (2.1.1)","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"🏗️ Semantic structure (1.3.1)","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}'
+        theme: purple
+        title: 'WCAG Analysis'
+        type: ''
+        width: 320
+      height: 200
+      id: 'analysis-note'
+      position:
+        x: 1100
+        y: 50
+      type: custom-note
+      width: 320
+    - data:
+        author: WCAG Expert
+        desc: 'AI remediation capabilities'
+        height: 220
+        selected: false
+        showAuthor: true
+        text: '{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"🤖 AI-Powered Remediation","type":"text","version":1},{"type":"linebreak","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"Advanced AI generates:","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"💻 Before/after code examples","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"📚 Step-by-step implementation","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"⏱️ Time estimates for fixes","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"🧪 Testing procedures","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"📋 Priority-based action plans","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}'
+        theme: orange
+        title: 'AI Remediation'
+        type: ''
+        width: 340
+      height: 220
+      id: 'remediation-note'
+      position:
+        x: 2450
+        y: 50
+      type: custom-note
+      width: 340
+    - data:
+        author: WCAG Expert
+        desc: 'Report generation features'
+        height: 200
+        selected: false
+        showAuthor: true
+        text: '{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"📊 Comprehensive Reporting","type":"text","version":1},{"type":"linebreak","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"Professional reports include:","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"📈 Compliance scores & metrics","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"🎯 Prioritized action items","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"💼 Business impact analysis","type":"text","version":1},{"type":"linebreak","version":1},{"detail":0,"format":0,"mode":"normal","style":"","text":"🔄 Implementation roadmap","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}'
+        theme: teal
+        title: 'Report Generation'
+        type: ''
+        width: 320
+      height: 200
+      id: 'report-note'
+      position:
+        x: 3200
+        y: 50
+      type: custom-note
+      width: 320
+    viewport:
+      x: -200
+      y: 100
+      zoom: 0.8
