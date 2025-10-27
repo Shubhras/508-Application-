@@ -2,5 +2,8 @@
 .env
 .env/
 
+
+/logs
+logs/
 node_modules/
 /node_modules
