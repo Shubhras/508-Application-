@@ -1,8 +1,8 @@
+const https = require("https");
 const axios = require('axios');
 const logger = require('./logger_utility');
 const CodeAnalyzer = require('./code_analyzer_utility');
 const remediationPrompts = require('./remediation_prompts_database');
-import https from "https";
 
 class TextCompletionService {
   constructor(systemPrompt, model = 'gpt-4o', initial_tokens = 150, temperature = 0.1, maxTokens = 1000) {
