@@ -2,6 +2,7 @@ const axios = require('axios');
 const logger = require('./logger_utility');
 const CodeAnalyzer = require('./code_analyzer_utility');
 const remediationPrompts = require('./remediation_prompts_database');
+import https from "https";
 
 class TextCompletionService {
   constructor(systemPrompt, model = 'gpt-4o', initial_tokens = 150, temperature = 0.1, maxTokens = 1000) {
@@ -22,6 +23,9 @@ class TextCompletionService {
       //TODO: replace with your settings
       let baseUrl = 'https://api.openai.com/v1';
       let apiKey = process.env.LLM_API_KEY
+
+      const agent = new https.Agent({ keepAlive: false });
+
       try {
           const response = await fetch(`${baseUrl}/chat/completions`, {
               method: 'POST',
@@ -30,6 +34,7 @@ class TextCompletionService {
                   'Authorization': `Bearer ${apiKey}`,
                   // 'OpenAI-Organization': 'org-...'
               },
+              agent,
               body: JSON.stringify({
                   max_tokens: Math.min(this.maxTokens, max_tokens),
                   temperature: this.temperature,

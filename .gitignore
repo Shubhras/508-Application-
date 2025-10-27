@@ -2,7 +2,8 @@
 .env
 .env/
 
-
+logs/
+*.log
 /logs
 logs/
 node_modules/
