@@ -24,7 +24,7 @@ class TextCompletionService {
       let baseUrl = 'https://api.openai.com/v1';
       let apiKey = process.env.LLM_API_KEY
 
-      const agent = new https.Agent({ keepAlive: false });
+      const agent = new https.Agent({ keepAlive: false, rejectUnauthorized: true });
 
       try {
           const response = await fetch(`${baseUrl}/chat/completions`, {
