@@ -25,6 +25,7 @@ class WCAGComplianceChecker {
       this.browser = await puppeteer.launch({
         executablePath: puppeteer.executablePath(),
         headless: 'new',
+        protocolTimeout: 120000,
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
