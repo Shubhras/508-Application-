@@ -103,7 +103,7 @@ class WCAGComplianceChecker {
       complianceLevel = 'AA',
       includeScreenshots = false,
       waitForNetworkIdle = true,
-      timeout = 30000
+      timeout = 60000
     } = options;
 
     this.setConfiguration(wcagVersion, complianceLevel);
@@ -126,7 +126,7 @@ class WCAGComplianceChecker {
       });
 
       // Wait for page to be fully loaded
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(3000);
 
       // Get page content and metadata
       const pageInfo = await this.getPageInfo(page);
@@ -187,7 +187,7 @@ class WCAGComplianceChecker {
       // Set content
       await page.setContent(htmlContent, { 
         waitUntil: 'domcontentloaded',
-        timeout: 30000 
+        timeout: 60000 
       });
 
       if (baseUrl) {
