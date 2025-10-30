@@ -164,8 +164,12 @@ class WCAGComplianceChecker {
       logger.error(`Error checking URL ${url}:`, error);
       throw new Error(`Failed to check URL: ${error.message}`);
     } finally {
-      await page.close();
-      await this.cleanup();
+      try {
+          await page.close();
+        } catch (closeError) {
+          logger.warn('Error closing page:', closeError);
+        }
+        await this.cleanup();
     }
   }
 
