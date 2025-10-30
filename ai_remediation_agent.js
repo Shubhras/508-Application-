@@ -92,7 +92,7 @@ class AIRemediationAgent {
       baseURL: config.baseURL || 'https://api.openai.com/v1',
       maxTokens: config.maxTokens || 4000,
       temperature: config.temperature || 0.1,
-      timeout: config.timeout || 30000,
+      timeout: config.timeout || 60000,
       retries: config.retries || 1,
       concurrency: config.concurrency || 3
     };

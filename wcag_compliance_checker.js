@@ -39,11 +39,16 @@ class WCAGComplianceChecker {
   }
 
   async cleanup() {
-    if (this.browser) {
-      await this.browser.close();
-      this.browser = null;
+      try {
+        if (this.browser) {
+          await this.browser.close();
+          this.browser = null;
+          logger.info('Browser closed successfully.');
+        }
+      } catch (error) {
+        logger.error('Error during browser cleanup:', error);
+      }
     }
-  }
 
   setConfiguration(version, level) {
     this.currentVersion = version;
@@ -160,6 +165,7 @@ class WCAGComplianceChecker {
       throw new Error(`Failed to check URL: ${error.message}`);
     } finally {
       await page.close();
+      await this.cleanup();
     }
   }
 
@@ -218,6 +224,7 @@ class WCAGComplianceChecker {
       throw new Error(`Failed to check HTML: ${error.message}`);
     } finally {
       await page.close();
+      await this.cleanup();
     }
   }
 

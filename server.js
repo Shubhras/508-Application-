@@ -115,7 +115,7 @@ app.post('/api/check/url', [
       complianceLevel: req.body.complianceLevel || 'AA',
       includeScreenshots: req.body.includeScreenshots || false,
       waitForNetworkIdle: req.body.waitForNetworkIdle || true,
-      timeout: req.body.timeout || 30000
+      timeout: req.body.timeout || 60000
     };
 
     logger.info(`Starting URL check for: ${req.body.url}`);
@@ -860,7 +860,7 @@ app.get('/api/docs', (req, res) => {
           complianceLevel: 'Compliance level (optional, default: AA)',
           includeScreenshots: 'Include screenshots (optional, default: false)',
           waitForNetworkIdle: 'Wait for network idle (optional, default: true)',
-          timeout: 'Timeout in milliseconds (optional, default: 30000)'
+          timeout: 'Timeout in milliseconds (optional, default: 60000)'
         }
       },
       checkHtml: {
